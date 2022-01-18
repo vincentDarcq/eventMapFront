@@ -1,0 +1,46 @@
+span {
+  cursor: pointer;
+}
+
+.ami {
+  width: 200px;
+  text-align: center;
+  background-color: #12577f;
+  color: white;
+  padding-top: 8px;
+  border-radius: 20%;
+}
+
+.container {
+  height: 90vh;
+}
+
+a{
+  color: black;
+}
+
+mat-card{
+  padding: 0;
+  background-color: #eee;
+  box-shadow: none !important;
+}
+
+mat-card-content{
+  float: none;
+  clear: none;
+  border-style: none;
+  border-width: 1px;
+  border-color: rgba(7, 0, 0, 0.98);
+  border-radius: 20px;
+  box-shadow: inset -2px -2px 5px 0 #000;
+  -webkit-backface-visibility: visible;
+  backface-visibility: visible;
+  -webkit-perspective: 824px;
+  perspective: 824px;
+  -webkit-transform: perspective(216px);
+  transform: perspective(216px);
+  font-weight: 400;
+  background-clip: padding-box;
+  cursor: pointer;
+  background-color: #e5e1e1;
+}

@@ -1,0 +1,65 @@
+.list {
+  height: 80vh;
+  overflow-y: scroll;  
+}
+
+@media only screen and (max-width: 500px) {
+  /* For mobile phones: */
+  .list {
+    height: 26vh;
+    padding: 10px;
+    overflow:scroll;
+  }
+
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+#event {
+  float: none;
+  clear: none;
+  border-style: none;
+  border-width: 1px;
+  border-color: rgba(7, 0, 0, 0.98);
+  border-radius: 20px;
+  box-shadow: inset -2px -2px 5px 0 #000;
+  -webkit-backface-visibility: visible;
+  backface-visibility: visible;
+  -webkit-perspective: 824px;
+  perspective: 824px;
+  -webkit-transform: perspective(216px);
+  transform: perspective(216px);
+  font-weight: 400;
+  background-clip: padding-box;
+}
+
+.card-body {
+  padding:0;
+  height: 80px;
+  display: flex;
+  flex-flow: column nowrap;
+  background: #b0c9f3;
+  cursor: pointer;
+  text-align: center;
+}
+
+.card {
+  border: none;
+  background-color: #eee;
+}
+
+p {
+  font-size: 0.8rem;
+  font-weight: 400;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+#titre {
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+

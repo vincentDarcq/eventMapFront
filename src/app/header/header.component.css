@@ -1,0 +1,121 @@
+.link {
+  outline: 0;
+  cursor: pointer;
+}
+input{
+  margin-left: 10px !important;
+  padding-left: 20px !important;
+  width: 150px;
+  font-size: 12px;
+}
+mat-toolbar{
+  font-size: 12px;
+  background-color: #d5f7f1;
+  height: 20%;
+}
+
+img{
+  margin-right: 0px !important;
+  width: 10%;
+  height: 7%;
+}
+
+.phone, .select-bars{
+  display: none;
+}
+
+mat-toolbar, #search{
+  padding: 0;
+}
+
+a{
+  color: #4f4a4a;
+  line-height: 1.5;
+  font-size: 400;
+  margin: 2px;
+}
+
+button {
+  background-color: #54d9e3;
+  margin-left: 10px !important;
+}
+
+@media only screen and (max-width: 500px) {
+  /* For mobile phones: */
+  .bar-right {
+    display: none !important;
+  }
+
+  .phone {
+    display: block;
+  }
+
+  .select-bars{
+    display: block;
+    padding: 10px;
+    position: absolute;
+    background: rgba(220, 242, 234, 0.988);
+    height: 160px;
+    width: 150px;
+    top: 5px;
+    right: 15px;
+    z-index:999;
+    border: solid 1px rgba(172, 198, 188, 0.988);
+    border-radius: 5px;
+  }
+
+  .fa-times {
+    padding-bottom: 15px;
+    position: relative;
+    left: 85%;
+  }
+
+  .fa-bars{
+    padding-right: 20px;
+    color: rgba(45, 91, 74, 0.988);
+  }
+
+  .mat-toolbar{
+    height: 10vh;
+    padding: 16px;
+  }
+
+  img{
+    content: url(../../favicon.ico);
+    margin-right: 5px !important;
+    width: 55px;
+    height: 40px;
+  }
+
+  #search {
+    margin-right: 0px !important;
+    padding: 12px;
+  }
+
+  input{
+    width: 125px;
+    font-size: 12px;
+    padding-left: 10px !important;
+  }
+
+  mat-toolbar > button {
+    background-color: #54d9e3;
+    text-indent: -9999px;
+    height: 30px;
+    line-height: 0;
+    padding: 0px;
+  }
+
+  mat-toolbar > button::after{
+    padding: 0px;
+    content: "Créer";
+    text-indent: 0;
+    display: block;
+    line-height: initial;
+  }
+
+  div > button {
+    margin-left: 0px !important;
+    margin-bottom: 10px;
+  }
+}

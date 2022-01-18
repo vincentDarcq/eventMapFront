@@ -1,0 +1,32 @@
+.container {
+  max-height: 80vh;
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.noevent {
+  text-align: center;
+}
+
+h2 {
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+#organisateur {
+  display:flex;
+  flex-direction: row;
+  margin-bottom: 0px;
+}
+
+a {
+  padding: 0px 3px;
+}
+
+p {
+  padding: 0px 3px;
+}

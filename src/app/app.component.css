@@ -1,0 +1,14 @@
+* {
+  background: #eee;
+}
+
+app-friend-list{
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+}
+
+app-friend-chat{
+  border: solid 4px grey;
+  width: 40vh;
+}

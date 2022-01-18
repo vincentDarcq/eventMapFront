@@ -1,0 +1,18 @@
+<div fxLayout="row" fxLayout.xs="column" class="container">
+  <div fxLayout="column" fxLayout.xs="row" fxFlex="50" fxFlex.xs="50" id="event">
+    <app-event [details]=true [inputEvent]="event"></app-event>
+    <div fxLayout="row" fxLayoutGap="5px">
+      <img [ngStyle]="event.image1 && {'height':'200px', 'width':'220px'}" *ngIf="event.image1"
+        [src]="serverImg+event.image1" alt="image 1">
+      <img [ngStyle]="event.image2 && {'height':'200px', 'width':'220px'}" *ngIf="event.image2"
+        [src]="serverImg+event.image2" alt="image 2">
+      <img [ngStyle]="event.image3 && {'height':'200px', 'width':'220px'}" *ngIf="event.image3"
+        [src]="serverImg+event.image3" alt="image 2">
+      <img [ngStyle]="event.imageUrl && {'height':'200px', 'width':'220px'}" *ngIf="event.imageUrl"
+        [src]="event.imageUrl" alt="image url">
+    </div>
+  </div>
+  <div fxFlex="50" fxFlex.xs="50">
+    <app-event-chat [event]="event"></app-event-chat>
+  </div>
+</div>

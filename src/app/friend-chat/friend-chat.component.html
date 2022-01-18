@@ -1,0 +1,11 @@
+<div *ngIf="friend">
+  <div class="chatHead" fxLayout="row" fxLayoutGap="5px">
+    <p class="friend">{{ friend }}</p>
+    <span fxFlex="auto"></span>
+    <p class="close" (click)="closeChat(friend)">X</p>
+  </div>
+  <div class="messages">
+
+  </div>
+  <input type="text">
+</div>

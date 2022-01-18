@@ -1,0 +1,113 @@
+<h3 style="text-align: center">Détails de l'évènement</h3>
+<form (ngSubmit)="myForm.valid && createEvent()" #myForm="ngForm" enctype="multipart/form-data">
+
+  <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="10%">
+
+    <div fxLayout="column" fxFlex="10" fxLayoutGap="20px">
+      <mat-radio-group [(ngModel)]="newEvent.type" name="type" required>
+        <mat-radio-button *ngFor="let event of events" value="{{event}}">{{event}}</mat-radio-button>
+      </mat-radio-group>
+      <span *ngIf="myForm.controls.type?.errors?.required && myForm.submitted" class="error-msg">Vous devez sélectionner
+        un type</span>
+      <span fxFlex="auto"></span>
+      <mat-radio-group [(ngModel)]="scope" name="scope">
+        <label for="scope">
+          L'évènement est plublic par défaut
+          <mat-radio-button value="public">public</mat-radio-button>
+          <mat-radio-button value="privé">privé</mat-radio-button>
+        </label>
+      </mat-radio-group>
+      <mat-form-field appearance="fill" *ngIf="scope === 'privé'">
+        <mat-label>Invitations</mat-label>
+        <mat-select [formControl]="invitations" multiple>
+          <mat-option *ngFor="let ami of createur.amis" [value]="ami">{{ami}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row no wrap" fxLayoutGap="10%">
+
+      <div fxLayout="column nowrap" fxLayoutGap="2px">
+        <mat-form-field>
+          <input matInput [(ngModel)]="newEvent.dateDebut" name="dateDebut" id="dateDebut" placeholder="Date de début"
+            [matDatepicker]="pickerDebut" required />
+          <mat-datepicker-toggle matSuffix [for]="pickerDebut"></mat-datepicker-toggle>
+          <mat-datepicker format="DD-MM-YYYY" #pickerDebut></mat-datepicker>
+        </mat-form-field>
+        <span *ngIf="myForm.controls.dateDebut?.errors?.required && myForm.submitted" class="error-msg">Vous devez
+          choisir la date de début</span>
+        <mat-form-field>
+          <input matInput [ngxTimepicker]="beginTime" [format]="24" placeholder="heure de début"
+            [(ngModel)]="newEvent.beginTime" name="beginTime" />
+        </mat-form-field>
+        <ngx-material-timepicker #beginTime [minutesGap]="5"></ngx-material-timepicker>
+        <mat-form-field>
+          <input matInput [(ngModel)]="newEvent.dateFin" name="dateFin" id="dateFin" placeholder="Date de fin"
+            [matDatepicker]="pickerFin" />
+          <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFin></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [ngxTimepicker]="endTime" [format]="24" placeholder="heure de fin"
+            [(ngModel)]="newEvent.endTime" name="endTime" />
+        </mat-form-field>
+        <ngx-material-timepicker #endTime [minutesGap]="5"></ngx-material-timepicker>
+        <div *ngIf="!newEvent.createByOwner" fxLayout="column" fxLayoutAlign="center center">
+          <label for="newEvent.createur">Ce n'est pas vous qui organisez ?
+            <mat-form-field fxLayout="column" fxLayoutAlign="center center">
+              <input matInput [(ngModel)]="newEvent.createur" name="organisateur" placeholder="Organisateur" />
+            </mat-form-field>
+          </label>
+          <label for="newEvent.emailCreateur">Email de l'organisateur
+            <mat-form-field fxLayout="column" fxLayoutAlign="center center">
+              <input matInput [(ngModel)]="newEvent.emailCreateur" name="organisateur" placeholder="email" />
+            </mat-form-field>
+          </label>
+          <span *ngIf="errorCreator" class="error-msg">{{ errorCreator }}</span>
+        </div>
+      </div>
+
+      <div fxLayout="column nowrap" style="width: 500px;">
+        <mat-form-field>
+          <input [(ngModel)]="newEvent.name" matInput name="name" id="name" placeholder="Nom de l'évènement" required />
+        </mat-form-field>
+        <span *ngIf="myForm.controls.name?.errors?.required && myForm.submitted" class="error-msg">Ce champ est
+          obligatoire.</span>
+        <mat-form-field>
+          <div fxLayout="column" fxLayoutGap="5px">
+            <input type="text" matInput [(ngModel)]="newEvent.lieu" name="lieu" id="lieu" [matAutocomplete]="auto"
+              (keyup)="addresseFromGeoApi()" class="form-control" placeholder="Entrez une adresse" />
+            <span *ngIf="errorPlace" class="error-msg">{{ errorPlace }}</span>
+            <div id="map" leaflet *ngIf="displayMap" (leafletMapReady)="onMapReady($event)"
+              [leafletOptions]="mapOptions"></div>
+          </div>
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let result of searchResults" [displayWith]="result" [value]="result.address"
+              (click)="selectAdress()">
+              {{ result.address }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field>
+          <textarea type="text" rows="4" matInput [(ngModel)]="newEvent.description" name="description" id="description"
+            class="form-control" placeholder="Description de l'évènement"></textarea>
+        </mat-form-field>
+        <p>Vous pouvez charger 3 images pour décrire votre évènement</p>
+        <div fxLayout="row" fxLayoutGap="50px">
+          <div (click)="openFile1()" class="fa fa-cloud-upload fa-2x">
+            <input #fileInput1 type="file" (change)="onImage1Change($event)" fxHide="true" name="image1" id="image1" />
+          </div>
+          <div (click)="openFile2()" class="fa fa-cloud-upload fa-2x">
+            <input #fileInput2 type="file" (change)="onImage2Change($event)" fxHide="true" name="image2" id="image2" />
+          </div>
+          <div (click)="openFile3()" class="fa fa-cloud-upload fa-2x">
+            <input #fileInput3 type="file" (change)="onImage3Change($event)" fxHide="true" name="image3" id="image3" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div fxLayoutAlign="center center">
+    <button id="submit" color="primary" type="submit" mat-raised-button>Créer/Modifier l'évènement</button>
+  </div>
+</form>

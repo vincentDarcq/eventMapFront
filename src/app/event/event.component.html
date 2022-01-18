@@ -1,0 +1,35 @@
+<mat-card class="container" *ngIf="event.name; else noevent;">
+    <a class="nav-link" *ngIf="!details; else noLink" [routerLink]="['/eventDetail', { _id: event._id }]">
+        <h2>{{ event.name }}</h2>
+    </a>
+    <ng-template #noLink>
+        <h2>{{ event.name }}</h2>
+    </ng-template>
+    <mat-card-content *ngIf="event.type">Type: {{ event.type }}</mat-card-content>
+    <mat-card-content *ngIf="event.dateDebutString">Début : {{ event.dateDebutString }}</mat-card-content>
+    <mat-card-content *ngIf="event.timeLeft">Commence dans {{ event.timeLeft.days }} jours, {{ event.timeLeft.hours }}
+        heures et {{ event.timeLeft.minutes }} minutes</mat-card-content>
+    <mat-card-content *ngIf="event.dateFinString && event.endTime">Fin : {{ event.dateFinString }} à {{ event.endTime }}
+    </mat-card-content>
+    <mat-card-content *ngIf="event.lieu">Lieu : {{ event.lieu }}</mat-card-content>
+    <mat-card-content *ngIf="event.description">Description : {{ event.description }}</mat-card-content>
+    <mat-card-content *ngIf="event.space_and_time">{{ event.space_and_time }}</mat-card-content>
+    <mat-card-content *ngIf="event.pricing_info">{{ event.pricing_info }}</mat-card-content>
+    <mat-card-content id="organisateur" *ngIf="event.createur">Organisateur :
+        <a class="nav-link" [routerLink]="['/otherProfile', { user : event.createur }]"
+            *ngIf="(currentUser && event.emailCreateur !== currentUser.email && event.createByOwner) || (!currentUser && event.createByOwner); else current">
+            {{ event.createur }}</a>
+    </mat-card-content>
+    <ng-template #current>
+        <p>{{ event.createur }}</p>
+    </ng-template>
+    <mat-card-content *ngIf="event.emailCreateur">Contact : {{ event.emailCreateur }}</mat-card-content>
+    <a class="nav-link" [routerLink]="['/createEvent', { _id : event._id }]"
+        *ngIf="currentUser && event.createByOwner && event.emailCreateur === currentUser.email">
+        <button mat-raised-button color="primary">
+            Modifier l'évènement</button>
+    </a>
+</mat-card>
+<ng-template #noevent>
+    <p class="noevent">Cliquez sur un event dans la liste ou sur la carte pour afficher les détails ici</p>
+</ng-template>

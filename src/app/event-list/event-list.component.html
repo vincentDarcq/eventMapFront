@@ -1,0 +1,20 @@
+<div class="list">
+    <div *ngIf="filter; else nofilters">
+        <div class="card" *ngFor="let event of eventsFiltered; let i = index">
+            <div class="card-body" id="event" (click)="displayEvent(i)">
+                <p id="titre">{{ event.name }}</p>
+                <p>{{ event.type }}</p>
+                <p>{{ event.dateDebutString }}</p>
+            </div>
+        </div>
+    </div>
+    <ng-template #nofilters>
+        <div class="card" *ngFor="let event of events; let i = index">
+            <div class="card-body" id="event" (click)="displayEvent(i)">
+                <p id="titre">{{ event.name }}</p>
+                <p>{{ event.type }}</p>
+                <p>{{ event.dateDebutString }}</p>
+            </div>
+        </div>
+    </ng-template>
+</div>

@@ -1,0 +1,21 @@
+<div class="filtres">
+    <mat-form-field class="filtre" appearance="fill">
+        <mat-label>Filtrer les types</mat-label>
+        <mat-select [formControl]="filtersType" multiple>
+            <mat-option *ngFor="let event of typeEvents" [value]="event">{{event}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field class="filtre" appearance="fill">
+        <mat-label>Filtrer les dates</mat-label>
+        <mat-select [formControl]="filtersDate" multiple>
+            <mat-option *ngFor="let date of dates" [value]="date">{{date}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div class="elements" fxLayout="row" fxLayout.xs="column">
+    <app-event-list class="element" fxFlex="100" [events]="events" [inputFiltersDate]="filtersDate.value"
+        [inputFiltersType]="filtersType.value" (outputEvent)="displayEvent($event)"></app-event-list>
+    <app-map class="element" fxFlex="100" [inputFiltersType]="filtersType.value" [inputEventToZoom]="eventToDisplay"
+        [inputEvents]="events" (outputEvent)="displayEvent($event)" [inputFiltersDate]="filtersDate.value"></app-map>
+    <app-event class="element" fxFlex="100" [details]=false [inputEvent]="eventToDisplay"></app-event>
+</div>

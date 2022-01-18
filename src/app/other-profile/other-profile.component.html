@@ -1,0 +1,30 @@
+<div class="container">
+  <div fxLayout="row" fxLayoutGap="10px" class="mt-1 mr-1">
+    <h3>Evènements de {{ profile }}</h3>
+    <span fxFlex="auto"></span>
+    <div class="ami" *ngIf="currentUser && friend">
+      Vous êtes amis avec {{ profile }}
+    </div>
+    <div *ngIf="currentUser && !toAnswer && !friend">
+      <button *ngIf="this.user.profile_type === 'privé' && currentUser.profile_type === 'privé' && !asked"
+        mat-raised-button color="primary" (click)="askFriend()">Demander en ami cet organisateur</button>
+      <button *ngIf="this.user.profile_type === 'privé' && currentUser && currentUser.profile_type === 'privé' && asked"
+        mat-raised-button color="primary" (click)="cancelAskFriend()">Annuler la demande d'ami</button>
+    </div>
+    <div *ngIf="toAnswer">
+      <button mat-raised-button color="primary" (click)=acceptFriend()>Accepter sa demande d'ami</button>
+      <button mat-raised-button color="secondary" (click)=deniedFriend()>Refuser sa demande d'ami</button>
+    </div>
+  </div>
+  <mat-card fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="5px">
+    <mat-card-content *ngFor="let event of events; let i = index">
+      <a class="nav-link" [routerLink]="['/eventDetail', { _id: event._id }]">
+        <div class="card-body" id="event" (click)="displayEvent(i)">
+          <b>{{ event.name }}</b><br>
+          <span>{{ event.type }}</span><br>
+          <span>{{ event.dateDebutString }}</span>
+        </div>
+      </a>
+    </mat-card-content>
+  </mat-card>
+</div>

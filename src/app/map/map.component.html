@@ -1,0 +1,5 @@
+<div fxLayout="column" fxLayoutAlign="center center">
+  <div id="map" leaflet *ngIf="displayMap" (leafletMapReady)="onMapReady($event)" [leafletOptions]="mapOptions"></div>
+  <button mat-raised-button color="primary" (click)="backToPosition()">Revenir à ma position</button>
+  <button mat-raised-button (click)="callOpenData()">test API OpenData</button>
+</div>

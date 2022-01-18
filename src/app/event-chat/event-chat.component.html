@@ -1,0 +1,18 @@
+<div fxLayout="column">
+  <ul fxFlex="60vh" fxFlex.xs="35vh" class="list-messages">
+    <li *ngFor="let message of messages" fxLayout="row">
+      <span class="mr-1">{{ message.createdAt }}</span>
+      <strong class="mr-3">{{ message.userName }}</strong>
+      <span>{{ message.message }}</span>
+      <span fxFlex="auto"></span>
+      <span *ngIf="currentUser._id === message.userId" class="far fa-trash-alt"
+        (click)="deleteMessage(message._id)"></span>
+    </li>
+  </ul>
+  <div fxLayout="row" class="submit">
+    <input class="form-control flex-fill mr-2 message" type="text" #input [(ngModel)]="message"
+      (keyup)="enter($event)" />
+    <button class="btn btn-md btn-primary" (click)="submitMessage()">Publier</button>
+  </div>
+  <span *ngIf="errorOnPublish" class="error-msg">{{ errorOnPublish }}</span>
+</div>

@@ -1,0 +1,21 @@
+li{
+  list-style-type: none;
+}
+
+.list-messages {
+  overflow-y: auto;
+  max-height: calc(90vh - 160px);
+  margin-bottom: 20%;
+}
+
+ul{
+  padding-inline-start: 0;
+}
+
+.fa-trash-alt {
+  cursor: pointer;
+}
+
+.error-msg{
+  color: red;
+}

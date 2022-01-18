@@ -1,0 +1,39 @@
+<div class="profile" fxLayout="row" fxLayout.xs="column">
+    <mat-card class="p-2 user" fxLayout.xs="row" fxLayoutGap.xs="15px">
+        <mat-card-content class="card-compte" *ngIf="user" fxLayout="column" fxLayoutGap="15px">
+            <div class="mail">email : {{ user.email }}</div>
+            <div>name : {{ user.name }}</div>
+        </mat-card-content>
+        <a class="nav-link link-change-pass" [routerLink]="['/editPass', { email : user.email } ]">
+            <button mat-raised-button class="pass">Changer Mot de Passe</button>
+        </a>
+    </mat-card>
+    <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="5px" fxLayoutAlign="center start">
+        <mat-card-content *ngFor="let event of events;" id="events">
+            <div class="card-body" id="event" [routerLink]="['/eventDetail', { _id: event._id }]">
+                <a [routerLink]="['/eventDetail', { _id: event._id }]">{{ event.name }}</a><br>
+                <span class="nopointer">{{ event.type }}</span><br>
+                <span class="nopointer">{{ event.dateDebutString }}</span>
+            </div>
+            <button mat-raised-button (click)="popupToDeleteEvent(event._id)">Supprimer cet évènement</button>
+        </mat-card-content>
+    </div>
+    <div fxLayout="column" fxFlex="10">
+        <mat-card class="p-2">
+            <mat-card-title>Mes amis</mat-card-title>
+            <mat-card-content class="friend" *ngFor="let ami of user.amis; let i = index" fxLayout="row">
+                <a class="nav-link friend-link" [routerLink]="['/otherProfile', { user : ami }]">{{ ami }}</a>
+                <span fxFlex="auto"></span>
+                <span class="far fa-trash-alt" (click)="popupToDeleteFriend(i)"></span>
+            </mat-card-content>
+        </mat-card>
+        <mat-card class="p-2">
+            <mat-card-title>Mes demandes</mat-card-title>
+            <mat-card-content *ngFor="let ask of myAsks;let i = index" fxLayout="row">
+                <a class="nav-link" [routerLink]="['/otherProfile', { user : ask.demandeur }]">{{ ask.demandeur }}</a>
+                <button mat-raised-button color="primary" (click)="acceptFriend(i)">Accepter</button>
+                <button mat-raised-button color="secondary" (click)="deniedFriend(i)">Refuser</button>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
