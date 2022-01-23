@@ -24,7 +24,8 @@ export class OtherProfileComponent implements OnInit, DoCheck, OnDestroy {
   asked: boolean = false;
   toAnswer: boolean = false;
   friend: boolean = false;
-  public subscription: Subscription;
+  public subCurrentUser: Subscription;
+  public subEvents: Subscription;
 
   constructor(private userService: UserService,
     private networkService: NetworkService,
@@ -40,10 +41,12 @@ export class OtherProfileComponent implements OnInit, DoCheck, OnDestroy {
     this.userService.getUser(this.profile).subscribe((user) => {
       this.user = user
       if (this.events.length === 0) {
-        this.events = this.eventService.getEventsByUser(user.email)
+        this.subEvents = this.eventService.getEventsByUser(user.email).subscribe((events: Array<Event>) => {
+          this.events = events;
+        })
       }
     });
-    this.subscription = this.userService.currentUser.subscribe((user: User) => {
+    this.subCurrentUser = this.userService.currentUser.subscribe((user: User) => {
       this.currentUser = user;
     })
     this.networkService.getAsks().subscribe((asks) => {
@@ -110,6 +113,6 @@ export class OtherProfileComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) { this.subscription.unsubscribe(); }
+    if (this.subCurrentUser) { this.subCurrentUser.unsubscribe(); }
   }
 }

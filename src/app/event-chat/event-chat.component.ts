@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MessageChat } from '../shared/models/message-chat';
+import { MessageChat } from '../shared/models/messageChat';
 import { User } from '../shared/models/user.model';
 import { Subscription } from 'rxjs';
 import { UserService } from '../shared/services/user.service';
@@ -34,55 +34,55 @@ export class EventChatComponent implements OnInit, OnDestroy {
     this.subscription = this.userService.currentUser.subscribe((user: User) => {
       this.currentUser = user;
     });
-    this.chatService.getMessages(this.event._id).subscribe((messages: Array<MessageChat>) => {
-      for (let message of messages) {
-        const m = new MessageChat(message._id, message.message, message.type,
-          message.userId, message.userName, message.eventId,
-          new Date(message.createdAt).toLocaleDateString() + " - " + new Date(message.createdAt).toLocaleTimeString());
-        this.messages.push(m);
-      }
-    })
+    // this.chatService.getMessages(this.event._id).subscribe((messages: Array<MessageChat>) => {
+    //   for (let message of messages) {
+    //     const m = new MessageChat(message._id, message.message, message.type,
+    //       message.userId, message.userName, message.eventId,
+    //       new Date(message.createdAt).toLocaleDateString() + " - " + new Date(message.createdAt).toLocaleTimeString());
+    //     this.messages.push(m);
+    //   }
+    // })
   }
 
   submitMessage() {
-    if (this.currentUser._id) {
-      if (this.message && this.message !== "") {
-        const message = new MessageChat();
-        message.setMessage(
-          this.message,
-          this.currentUser._id,
-          this.currentUser.name,
-          this.event._id);
-        this.chatService.saveMessage(message).subscribe((message: MessageChat) => {
-          this.messages.push(message);
-        });
-        this.input.nativeElement.focus();
-        this.message = "";
-      }
-    } else {
-      this.errorOnPublish = "Vous devez être connecté avec un compte pour publier"
-    }
+    // if (this.currentUser._id) {
+    //   if (this.message && this.message !== "") {
+    //     const message = new MessageChat();
+    //     message.setMessage(
+    //       this.message,
+    //       this.currentUser._id,
+    //       this.currentUser.name,
+    //       this.event._id);
+    //     this.chatService.saveMessage(message).subscribe((message: MessageChat) => {
+    //       this.messages.push(message);
+    //     });
+    //     this.input.nativeElement.focus();
+    //     this.message = "";
+    //   }
+    // } else {
+    //   this.errorOnPublish = "Vous devez être connecté avec un compte pour publier"
+    // }
   }
 
-  deleteMessage(id: string) {
-    Swal.fire({
-      title: 'Supprimer votre commentaire ?',
-      showCancelButton: true,
-      confirmButtonText: 'Ok',
-      cancelButtonText: 'No'
-    }).then((result) => {
-      if (result.value) {
-        this.chatService.deleteEvent(id).subscribe(() => {
-          const index = this.messages.findIndex((message) => message._id === id);
-          this.messages.splice(index, 1);
-        })
-      }
-    })
-  }
+  // deleteMessage(id: string) {
+  //   Swal.fire({
+  //     title: 'Supprimer votre commentaire ?',
+  //     showCancelButton: true,
+  //     confirmButtonText: 'Ok',
+  //     cancelButtonText: 'No'
+  //   }).then((result) => {
+  //     if (result.value) {
+  //       this.chatService.deleteEvent(id).subscribe(() => {
+  //         const index = this.messages.findIndex((message) => message._id === id);
+  //         this.messages.splice(index, 1);
+  //       })
+  //     }
+  //   })
+  // }
 
   enter(event: KeyboardEvent) {
     if (event.code === "Enter" || event.code === "NumpadEnter") {
-      this.submitMessage();
+      //this.submitMessage();
     }
   }
 

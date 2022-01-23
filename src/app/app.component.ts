@@ -1,5 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
-import { DynamicComponent } from './dynamic/dynamic.component';
+import { Component } from '@angular/core';
 import { FriendChatComponent } from './friend-chat/friend-chat.component';
 import { AuthService } from './shared/services/auth.service';
 import { MetaAndTitleService } from './shared/services/meta-and-title.service';
@@ -11,10 +10,8 @@ import { MetaAndTitleService } from './shared/services/meta-and-title.service';
   entryComponents: [FriendChatComponent]
 })
 export class AppComponent {
-  public elements: Array<FriendChatComponent> = [];
+  public friends: Array<String> = [];
   title = 'EventMap';
-  @ViewChild(DynamicComponent) dynamicComponent: DynamicComponent;
-
 
   constructor(
     private authService: AuthService,
@@ -23,12 +20,11 @@ export class AppComponent {
   }
 
   openChat(friend: string) {
-    let ref = this.dynamicComponent.addComponent(FriendChatComponent, friend);
-    this.elements.push(ref);
+    this.friends.push(friend);
   }
 
   closeChat(friend: string) {
-    const index = this.elements.findIndex(e => e.friend === friend);
-    this.elements.splice(index, 1);
+    const index = this.friends.findIndex(e => e === friend);
+    this.friends.splice(index, 1);
   }
 }

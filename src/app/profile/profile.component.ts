@@ -18,7 +18,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   user: User;
   events: Array<Event>;
   myAsks: Array<Ask>;
-  public subscription: Subscription;
+  public subCurrentUser: Subscription;
+  public subEvents: Subscription;
+  public subNetwork: Subscription;
 
   constructor(
     private userService: UserService,
@@ -31,13 +33,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.userService.currentUser.subscribe((user: User) => {
+    this.subCurrentUser = this.userService.currentUser.subscribe((user: User) => {
       this.user = new User(user._id, user.email, user.name, user.profile_type, user.amis);
+      this.subEvents = this.eventService.getEventsByUser(this.user.email).subscribe((events: Array<Event>) => {
+        this.events = events;
+      })
     });
-    this.eventService.events.subscribe(() => {
-      this.events = this.eventService.getEventsByUser(this.user.email);
-    })
-    this.networkService.getAsks().subscribe((asks) => {
+    this.subNetwork = this.networkService.getAsks().subscribe((asks) => {
       for (let ask of Object.keys(asks)) {
         if (asks[ask].destinataire === this.user.name) {
           this.myAsks.push(new Ask(asks[ask]._id, asks[ask].demandeur, asks[ask].destinataire));
@@ -97,6 +99,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) { this.subscription.unsubscribe(); }
+    if (this.subCurrentUser) { this.subCurrentUser.unsubscribe(); }
+    if (this.subEvents) { this.subEvents.unsubscribe(); }
+    if (this.subNetwork) { this.subNetwork.unsubscribe(); }
   }
 }

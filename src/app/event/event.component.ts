@@ -16,7 +16,8 @@ export class EventComponent implements OnInit, OnChanges, OnDestroy {
   @Input() inputEvent;
   event: Event;
   public currentUser: User;
-  public subscription: Subscription;
+  public subCurrentUser: Subscription;
+  public subEvent: Subscription;
 
   constructor(private userService: UserService,
     private eventService: EventService) {
@@ -24,10 +25,10 @@ export class EventComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.userService.currentUser.subscribe((user: User) => {
+    this.subCurrentUser = this.userService.currentUser.subscribe((user: User) => {
       this.currentUser = user;
     });
-    this.eventService.getEventFromTopBar().subscribe((event) => {
+    this.subEvent = this.eventService.getEventFromTopBar().subscribe((event) => {
       this.event = event;
     });
   }
@@ -40,11 +41,13 @@ export class EventComponent implements OnInit, OnChanges, OnDestroy {
         e.timeLeft, e.createOwner);
       this.event.setSpaceAndTime(e.space_and_time);
       this.event.setPricingInfo(e.pricing_info);
+      this.event.setCreateByOwner(e.createByOwner);
     }
   }
 
   ngOnDestroy() {
-    if (this.subscription) { this.subscription.unsubscribe(); }
+    if (this.subCurrentUser) { this.subCurrentUser.unsubscribe(); }
+    if (this.subEvent) { this.subEvent.unsubscribe(); }
   }
 
 }

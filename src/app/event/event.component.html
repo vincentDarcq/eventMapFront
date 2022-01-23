@@ -17,7 +17,7 @@
     <mat-card-content *ngIf="event.pricing_info">{{ event.pricing_info }}</mat-card-content>
     <mat-card-content id="organisateur" *ngIf="event.createur">Organisateur :
         <a class="nav-link" [routerLink]="['/otherProfile', { user : event.createur }]"
-            *ngIf="(currentUser && event.emailCreateur !== currentUser.email && event.createByOwner) || (!currentUser && event.createByOwner); else current">
+            *ngIf="(currentUser != null && event.emailCreateur !== currentUser.email && event.createByOwner) || (!currentUser && event.createByOwner); else current">
             {{ event.createur }}</a>
     </mat-card-content>
     <ng-template #current>

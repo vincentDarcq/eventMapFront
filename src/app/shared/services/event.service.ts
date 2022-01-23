@@ -45,15 +45,16 @@ export class EventService {
         } else {
           newEvent.setDateDebutString(new Date(e.dateDebut).toLocaleString())
         }
-        if (e.dateFin !== null) {
-          newEvent.setDateFin(new Date(e.dateFin));
-        } else {
+        if (!e.dateFin) {
           newEvent.setDateFin(null);
+        } else {
+          newEvent.setDateFin(new Date(e.dateFin));
         }
         newEvent.setInvites(e.invites)
         newEvent.setScope(e.scope);
         newEvent.setSpaceAndTime(e.space_and_time);
         newEvent.setPricingInfo(e.pricing_info);
+        newEvent.setCreateByOwner(e.createByOwner);
         newEvent.image1 = e.image1;
         newEvent.image2 = e.image2;
         newEvent.image3 = e.image3;
@@ -161,14 +162,12 @@ export class EventService {
     this.events.next(ev);
   }
 
-  public getEventsByUser(email: string) {
-    let e = new Array<Event>();
-    for (let event of this.events.value) {
-      if (event.getEmailCreateur() === email) {
-        e.push(event);
+  public getEventsByUser(email: string): Observable<Array<Event>> {
+    return this.http.get<Array<Event>>('/api/event/getEventsByUser', {
+      params: {
+        userMail: email
       }
-    }
-    return e;
+    })
   }
 
   public deleteEvent(eventId: string) {

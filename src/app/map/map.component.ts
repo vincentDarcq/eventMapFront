@@ -5,10 +5,12 @@ import {
 } from 'leaflet';
 import { MapPoint } from '../shared/models/map-point.model';
 import { Event } from '../shared/models/event';
-import { mapSquare } from '../shared/models/mapSquare';
+import { Subscription } from 'rxjs';
 import { EventService } from '../shared/services/event.service';
 import { EventsApiService } from '../shared/services/events-api.service';
 import { MapService } from '../shared/services/map.service';
+import { UserService } from '../shared/services/user.service';
+import { User } from '../shared/models/user.model';
 
 @Component({
   selector: 'app-map',
@@ -30,8 +32,11 @@ export class MapComponent implements OnInit, DoCheck, OnChanges {
   @Output() outputEvent = new EventEmitter();
   eventToDisplay: Event;
   bounds: LatLngBounds;
+  public subCurrentUser: Subscription;
+  user: User;
 
   constructor(
+    private userService: UserService,
     private mapService: MapService,
     private eventService: EventService,
     private zone: NgZone,
@@ -51,6 +56,9 @@ export class MapComponent implements OnInit, DoCheck, OnChanges {
     this.eventService.getEventFromTopBar().subscribe((event) => {
       this.getZoomOnEvent(new LatLng(event.latitude, event.longitude));
     });
+    this.subCurrentUser = this.userService.currentUser.subscribe((user: User) => {
+      this.user = user;
+    })
   }
 
   callOpenData() {

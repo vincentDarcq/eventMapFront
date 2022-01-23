@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MessageChat } from '../models/message-chat';
+import { MessageChat } from '../models/messageChat';
+import { RoomChat } from '../models/roomChat';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +13,21 @@ export class ChatService {
     private http: HttpClient
   ) { }
 
-  public roomChatExist(room: string) {
-    return this.http.get<String>('/api/chat/getRoomExist', {
+  public getRoomChat(user1: string, user2: string) {
+    return this.http.get<RoomChat>('/api/chat/getRoomChat', {
       params: {
-        room: room
+        user1: user1,
+        user2: user2
       }
     })
+  }
+
+  public initChat(roomName: string) {
+    return this.http.get<String>('/api/chat/initChat', {
+      params: {
+        roomName: roomName
+      }
+    });
   }
 
   public getMessages(eventId: string): Observable<Array<MessageChat>> {

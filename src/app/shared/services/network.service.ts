@@ -16,7 +16,7 @@ export class NetworkService {
   }
 
   public getAsks() {
-    return this.http.get<Array<Ask>>(`/network/getAks`)
+    return this.http.get<Array<Ask>>(`/api/network/getAks`)
   }
 
   public askFriend(askFriend: {
@@ -24,7 +24,7 @@ export class NetworkService {
     destinataire: string
   }): Observable<Ask> {
     this.asks = new Array();
-    return this.http.post<Ask>(`/network/askFriend`, askFriend).pipe(
+    return this.http.post<Ask>(`/api/network/askFriend`, askFriend).pipe(
       tap((ask: Ask) => {
         this.asks.push(ask);
         return ask;
@@ -33,7 +33,7 @@ export class NetworkService {
   }
 
   public deleteAsk(id: string) {
-    return this.http.delete<Ask>(`/network/deleteAskFriend`, {
+    return this.http.delete<Ask>(`/api/network/deleteAskFriend`, {
       params: {
         askId: id
       }
@@ -41,7 +41,7 @@ export class NetworkService {
   }
 
   public acceptFriend(askId: string, destinataire: string, demandeur: string) {
-    return this.http.get<any>(`/network/acceptFriend`, {
+    return this.http.get<any>(`/api/network/acceptFriend`, {
       params: {
         askId: askId,
         destinataire: destinataire,
@@ -51,7 +51,7 @@ export class NetworkService {
   }
 
   public deniedFriend(askId: string) {
-    return this.http.get<any>(`/network/deniedFriend`, {
+    return this.http.get<any>(`/api/network/deniedFriend`, {
       params: {
         askId: askId
       }
@@ -59,7 +59,7 @@ export class NetworkService {
   }
 
   public deleteFriend(user: string, ami: string) {
-    return this.http.get<any>(`/network/deleteFriend`, {
+    return this.http.get<any>(`/api/network/deleteFriend`, {
       params: {
         user: user,
         ami: ami

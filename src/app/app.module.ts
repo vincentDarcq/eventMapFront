@@ -49,7 +49,6 @@ registerLocaleData(localeFr);
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { FriendListComponent } from './friend-list/friend-list.component';
 import { FriendChatComponent } from './friend-chat/friend-chat.component';
-import { DynamicComponent } from './dynamic/dynamic.component';
 import { SanitizeHtmlPipe } from './sanitize-html.pipe';
 
 @NgModule({
@@ -70,7 +69,6 @@ import { SanitizeHtmlPipe } from './sanitize-html.pipe';
     EventChatComponent,
     FriendListComponent,
     FriendChatComponent,
-    DynamicComponent,
     SanitizeHtmlPipe
   ],
   imports: [
@@ -84,7 +82,7 @@ import { SanitizeHtmlPipe } from './sanitize-html.pipe';
     BrowserAnimationsModule,
     FlexLayoutModule,
     NgxMaterialTimepickerModule,
-    SocialLoginModule,
+    SocialLoginModule
   ],
   providers: [
     {

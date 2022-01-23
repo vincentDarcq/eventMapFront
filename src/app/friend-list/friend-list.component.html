@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="user">
   <h6 (click)="showList()">Discussions</h6>
   <div class="list" *ngIf="show">
     <ul *ngFor="let ami of user.amis">

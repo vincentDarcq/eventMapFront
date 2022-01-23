@@ -21,7 +21,11 @@ export class FriendListComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscription = this.userService.currentUser.subscribe((user: User) => {
-      this.user = new User(user._id, user.email, user.name, user.profile_type, user.amis);
+      if (user != null) {
+        this.user = new User(user._id, user.email, user.name, user.profile_type, user.amis);
+      } else {
+        this.user = null;
+      }
     });
   }
 
