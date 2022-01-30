@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Event } from '../shared/models/event';
 import { JwtToken } from '../shared/models/jwt-token.model';
+import { User } from '../shared/models/user.model';
 import { AuthService } from '../shared/services/auth.service';
 import { EventService } from '../shared/services/event.service';
 import { UserService } from '../shared/services/user.service';
@@ -15,12 +16,13 @@ import { UserService } from '../shared/services/user.service';
 export class HeaderComponent implements OnInit, OnDestroy {
   public jwtToken: JwtToken;
   public subscription: Subscription;
-  public eventSearch: string;
   public events: Array<Event>;
   public eventsSearched: Array<Event>;
-  public results: Array<string>;
+  public eventSearch: string;
   notConnected: boolean = false;
   connected: boolean = false;
+  public userSearch: string;
+  public usersSearched: Array<User>;
 
   constructor(
     private authService: AuthService,
@@ -41,25 +43,50 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  search() {
-    this.results = new Array<string>();
-    this.eventService.getEventsForNameStartWith(this.eventSearch).subscribe(
-      (events: Array<Event>) => {
-        events.forEach(event => {
-          this.results.push(event.name);
-          this.eventsSearched.push(event);
-        })
+  searchUsers() {
+    if (this.userSearch.length !== 0) {
+      this.userService.getUsersForNameStartWith(this.userSearch).subscribe(
+        (users: Array<User>) => {
+          this.usersSearched = new Array<User>();
+          users.forEach(user => {
+            this.usersSearched.push(user);
+          })
+        }
+      )
+    } else {
+      this.usersSearched = new Array<User>();
+    }
+  }
+
+  selectUser(index: number) {
+    let u;
+    for (let user of this.usersSearched) {
+      if (user.name === this.usersSearched[index].name) {
+        u = user;
       }
-    )
-    if (this.eventSearch.length === 0) {
-      this.results = new Array<string>();
+    }
+    this.router.navigate(['/otherProfile', { user: u.name }]);
+  }
+
+  searchEvents() {
+    if (this.eventSearch.length !== 0) {
+      this.eventService.getEventsForNameStartWith(this.eventSearch).subscribe(
+        (events: Array<Event>) => {
+          this.eventsSearched = new Array<Event>();
+          events.forEach(event => {
+            this.eventsSearched.push(event);
+          })
+        }
+      )
+    } else {
+      this.eventsSearched = new Array<Event>();
     }
   }
 
   selectEvent(index: number) {
     let e;
     for (let event of this.eventsSearched) {
-      if (event.name === this.results[index]) {
+      if (event.name === this.eventsSearched[index].name) {
         e = event;
       }
     }

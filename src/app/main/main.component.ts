@@ -9,6 +9,7 @@ import { EventsApiService } from '../shared/services/events-api.service';
 import { UserService } from '../shared/services/user.service';
 import { User } from '../shared/models/user.model';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -30,12 +31,15 @@ export class MainComponent implements OnInit, OnDestroy {
   currentDate: Date;
   mapBounds: LatLngBounds;
   user: User;
+  public userSearch: string;
+  public usersSearched: Array<User>;
   public eventSubscription: Subscription;
   public userSubscription: Subscription;
 
   constructor(
     private userService: UserService,
-    private eventService: EventService
+    private eventService: EventService,
+    private router: Router,
   ) {
     this.events = new Array<Event>();
     this.eventsOnMap = new Array<Event>();
@@ -43,6 +47,7 @@ export class MainComponent implements OnInit, OnDestroy {
     this.filtersType = new FormControl();
     this.filtersDate = new FormControl();
     this.currentDate = new Date();
+    this.usersSearched = new Array<User>();
   }
 
   ngOnInit(): void {

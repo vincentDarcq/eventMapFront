@@ -6,7 +6,10 @@ import {
   OnDestroy,
   Input,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ViewChild,
+  ElementRef,
+  AfterViewInit
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import * as io from 'socket.io-client';
@@ -21,7 +24,7 @@ import { UserService } from '../shared/services/user.service';
   templateUrl: './friend-chat.component.html',
   styleUrls: ['./friend-chat.component.css']
 })
-export class FriendChatComponent implements OnInit, OnDestroy, OnChanges {
+export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   friend: string;
   user: User;
   @Input() inputFriend;
@@ -33,10 +36,16 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges {
   message: string;
   messages: Array<MessageChat> = new Array<MessageChat>();
 
+  @ViewChild("input") input: ElementRef;
+
   constructor(
     private userService: UserService,
     private chatService: ChatService
   ) {
+  }
+
+  ngAfterViewInit(): void {
+    this.input.nativeElement.focus();
   }
 
   ngOnInit(): void {
@@ -49,10 +58,9 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges {
     this.subCurrentUser = this.userService.currentUser.subscribe((user: User) => {
       this.user = new User(user._id, user.email, user.name, user.profile_type, user.amis);
       this.chatService.getRoomChat(this.user.name, this.friend).subscribe((roomChat: RoomChat) => {
-        this.subChat = this.chatService.initChat(roomChat.roomName).subscribe(res => {
+        this.subChat = this.chatService.initChat(roomChat.roomName, this.user.name).subscribe(() => {
           this.roomName = roomChat.roomName;
           this.socket = io(`/${this.roomName}`);
-          console.log(this.socket)
           this.socket.emit('joinRoom', { roomName: this.roomName });
           this.socket.on('history', (messages: Array<MessageChat>) => {
             this.messages = messages;
@@ -76,8 +84,11 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges {
     this.message = "";
   }
 
-  messageStyle(message: MessageChat) {
-    return message.user === this.user.name ? 'right' : 'left';
+  enter(event: KeyboardEvent) {
+    if (event.code === "Enter" || event.code === "NumpadEnter") {
+      this.socket.emit("message", { message: this.message, user: this.user.name, friend: this.friend, roomName: this.roomName });
+      this.message = "";
+    }
   }
 
   setFriend(friend: string) {
@@ -92,8 +103,11 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges {
     if (this.subCurrentUser) { this.subCurrentUser.unsubscribe(); }
     if (this.subChat) { this.subChat.unsubscribe(); }
     this.socket.emit("leaveRoom", this.roomName);
-    const ns = this.socket.off(`/${this.roomName}`);
-    ns.emit('disconnect');
+    this.socket.disconnect();
     this.socket.close();
+  }
+
+  classForParagraphe(message: MessageChat) {
+    return message.user === this.user.name ? "messageUser" : "messageFriend";
   }
 }

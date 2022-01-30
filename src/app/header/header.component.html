@@ -1,11 +1,18 @@
 <mat-toolbar fxLayout="row" fxLayoutGap="15px">
     <img src="../../assets/logo_eventMap.png" alt="logo" routerLink="/">
     <button mat-raised-button class="link" routerLink="/createEvent">Créer un évènement</button>
-    <input placeholder="Chercher un event" [(ngModel)]="eventSearch" (keyup)="search()" type="text" class="form-control"
-        id="search" [matAutocomplete]="auto" />
-    <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let result of results; let i = index" [value]="result" (click)="selectEvent(i)">
-            {{ result }}
+    <input placeholder="Chercher un event" [(ngModel)]="eventSearch" (keyup)="searchEvents()" type="text"
+        class="form-control" id="search" [matAutocomplete]="autoEvents" />
+    <mat-autocomplete #autoEvents="matAutocomplete">
+        <mat-option *ngFor="let event of eventsSearched; let i = index" [value]="event.name" (click)="selectEvent(i)">
+            {{ event.name }}
+        </mat-option>
+    </mat-autocomplete>
+    <input placeholder="Chercher quelqu'un" [(ngModel)]="userSearch" (keyup)="searchUsers()" type="text"
+        class="form-control" [matAutocomplete]="autoUsers" id="finduser" />
+    <mat-autocomplete #autoUsers="matAutocomplete">
+        <mat-option *ngFor="let user of usersSearched; let i = index" [value]="user.name" (click)="selectUser(i)">
+            {{ user.name }}
         </mat-option>
     </mat-autocomplete>
     <span fxFlex="auto"></span>

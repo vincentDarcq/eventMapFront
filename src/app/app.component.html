@@ -1,7 +1,7 @@
 <app-header></app-header>
 <router-outlet></router-outlet>
-<div fxLayout="row" fxLayoutGap="15px">
+<div fxLayout="row" fxLayoutGap="15px" class="chats">
   <app-friend-chat *ngFor="let friend of friends" [inputFriend]="friend" (close)="closeChat($event)">
   </app-friend-chat>
+  <app-friend-list (friend)="openChat($event)"></app-friend-list>
 </div>
-<app-friend-list (friend)="openChat($event)"></app-friend-list>

@@ -78,7 +78,11 @@ export class EventService {
   }
 
   public getEventsForNameStartWith(value: string): Observable<Array<Event>> {
-    return this.http.post<Array<Event>>(`/api/event/find`, { value: value });
+    return this.http.get<Array<Event>>(`/api/event/find`, {
+      params: {
+        value: value
+      }
+    });
   }
 
   public createEvent(event: Event, formData?: FormData) {

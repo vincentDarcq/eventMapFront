@@ -59,10 +59,12 @@ export class OtherProfileComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   ngDoCheck(): void {
-    if (this.currentUser && this.user && !this.friend) {
-      for (let ami of this.user.amis) {
-        if (ami === this.currentUser.name) {
-          this.friend = true;
+    if (this.currentUser && this.user.amis && !this.friend) {
+      if (this.user.amis.length > 0) {
+        for (let ami of this.user.amis) {
+          if (ami === this.currentUser.name) {
+            this.friend = true;
+          }
         }
       }
     }

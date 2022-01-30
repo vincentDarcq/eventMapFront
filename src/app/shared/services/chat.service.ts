@@ -22,10 +22,11 @@ export class ChatService {
     })
   }
 
-  public initChat(roomName: string) {
+  public initChat(roomName: string, user: string) {
     return this.http.get<String>('/api/chat/initChat', {
       params: {
-        roomName: roomName
+        roomName: roomName,
+        user: user
       }
     });
   }

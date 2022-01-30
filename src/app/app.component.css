@@ -2,13 +2,20 @@
   background: #eee;
 }
 
+app-friend-chat{
+  border: solid 2px rgb(55, 94, 152);
+  margin: 0 !important;
+  width: 50vh;
+}
+
 app-friend-list{
+  height: auto;
+}
+
+.chats{
   position: absolute;
   bottom: 0;
   right: 5px;
-}
-
-app-friend-chat{
-  border: solid 4px grey;
-  width: 40vh;
+  float: right;
+  z-index: 9999;
 }

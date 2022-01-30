@@ -29,8 +29,9 @@ export class MetaAndTitleService implements OnDestroy {
     const index = url.indexOf(";")
     if (index !== -1) {
       this.title.setTitle(metaData[url.substring(0, index)].title);
+    } else {
+      this.title.setTitle(metaData[url].title);
     }
-    this.title.setTitle(metaData[url].title);
   }
 
   private updateMeta(url: string): void {

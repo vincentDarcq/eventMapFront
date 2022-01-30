@@ -37,6 +37,14 @@ export class UserService {
     });
   }
 
+  public getUsersForNameStartWith(value: string): Observable<Array<User>> {
+    return this.http.get<Array<User>>(`/api/network/findUsers`, {
+      params: {
+        name: value
+      }
+    });
+  }
+
   public getUser(user: string): Observable<User> {
     return this.http.get<User>(`/api/auth/user`, {
       params: {
