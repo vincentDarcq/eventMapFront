@@ -4,7 +4,7 @@
     <span fxFlex="auto"></span>
     <p class="close" (click)="closeChat(friend)">X</p>
   </div>
-  <div class="messages">
+  <div id="messages">
     <div *ngFor="let message of messages" class="message">
       <div [ngClass]="classForParagraphe(message)" class="paragraphe">{{ message.message }}</div>
     </div>

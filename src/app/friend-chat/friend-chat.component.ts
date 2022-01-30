@@ -9,7 +9,8 @@ import {
   SimpleChanges,
   ViewChild,
   ElementRef,
-  AfterViewInit
+  AfterViewInit,
+  DoCheck
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import * as io from 'socket.io-client';
@@ -24,7 +25,7 @@ import { UserService } from '../shared/services/user.service';
   templateUrl: './friend-chat.component.html',
   styleUrls: ['./friend-chat.component.css']
 })
-export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit, DoCheck {
   friend: string;
   user: User;
   @Input() inputFriend;
@@ -42,6 +43,11 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
     private userService: UserService,
     private chatService: ChatService
   ) {
+  }
+  ngDoCheck(): void {
+    if (this.messages.length > 0) {
+      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
   }
 
   ngAfterViewInit(): void {
