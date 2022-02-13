@@ -36,7 +36,7 @@ export class EventsApiService {
 
   public callOpenData() {
     let cpt = 0;
-    for (let i = 10004; i < 12004; i += 20) {
+    for (let i = 0; i < 15000; i += 20) {
       this.http.get<any>(`https://public.opendatasoft.com/api/records/1.0/search/?dataset=evenements-publics-cibul&q=&rows=20&start=${i}&facet=tags&facet=placename&facet=department&facet=region&facet=city&facet=date_start&facet=date_end&facet=pricing_info&facet=updated_at&facet=city_district&refine.date_start=2022&timezone=Europe%2FParis`)
         .subscribe(res => {
           res.records.forEach(element => {
@@ -92,7 +92,7 @@ export class EventsApiService {
               if (event.getType() == null) {
                 event.setType("Divers");
               }
-              this.eventService.createEvent(event);
+              this.eventService.createEventFromOpendata(event);
             }
           });
         })

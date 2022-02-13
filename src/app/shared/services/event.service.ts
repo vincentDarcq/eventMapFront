@@ -60,15 +60,11 @@ export class EventService {
         newEvent.image3 = e.image3;
         if (newEvent.getDateFin()) {
           const time_before_end = this.timeBefore(newEvent.getDateFin());
-          if (time_before_end.days < 0 || time_before_end.hours < 0 || time_before_end.minutes < 0) {
-            this.deleteEvent(newEvent._id);
-          } else {
+          if (time_before_end.days >= 0 || time_before_end.hours >= 0 || time_before_end.minutes >= 0) {
             ev.push(newEvent);
           }
         } else {
-          if (newEvent.getTimeLeft().days < 0) {
-            this.deleteEvent(newEvent._id);
-          } else {
+          if (newEvent.getTimeLeft().days >= 0) {
             ev.push(newEvent);
           }
         }
@@ -83,6 +79,17 @@ export class EventService {
         value: value
       }
     });
+  }
+
+  public createEventFromOpendata(event: Event) {
+    event.setTimeLeft(this.timeBefore(event.dateDebut));
+    if (event.getTimeLeft().days >= 0) {
+      this.http.post<Event>('/api/event/createFromOpenData', event).subscribe((event: Event) => {
+        if (typeof event.name !== "undefined") {
+          this.events.value.push(event);
+        }
+      });
+    }
   }
 
   public createEvent(event: Event, formData?: FormData) {
