@@ -1,10 +1,10 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MessageChat } from '../shared/models/messageChat';
+import { MessageEvent } from '../shared/models/messageEvent';
 import { User } from '../shared/models/user.model';
 import { Subscription } from 'rxjs';
 import { UserService } from '../shared/services/user.service';
-import { ChatService } from '../shared/services/chat.service';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'app-event-chat',
@@ -14,81 +14,94 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 export class EventChatComponent implements OnInit, OnDestroy {
 
   @Input() event;
-  messages: Array<MessageChat>;
+  messages: Array<MessageEvent>;
   message: string
   roomId: string;
   errorOnPublish: string;
   public currentUser: User;
-  public subscription: Subscription;
+  public subCurrentUser: Subscription;
+  public subInitChat: Subscription;
+  public subMessages: Subscription;
+  ioClient: SocketIOClient.Socket;
+  socket: SocketIOClient.Socket;
 
   @ViewChild("input") input: ElementRef;
 
   constructor(
-    private userService: UserService,
-    private chatService: ChatService
+    private userService: UserService
   ) {
-    this.messages = new Array<MessageChat>();
+    this.messages = new Array<MessageEvent>();
   }
 
   ngOnInit(): void {
-    this.subscription = this.userService.currentUser.subscribe((user: User) => {
+    this.subCurrentUser = this.userService.currentUser.subscribe((user: User) => {
       this.currentUser = user;
     });
-    // this.chatService.getMessages(this.event._id).subscribe((messages: Array<MessageChat>) => {
-    //   for (let message of messages) {
-    //     const m = new MessageChat(message._id, message.message, message.type,
-    //       message.userId, message.userName, message.eventId,
-    //       new Date(message.createdAt).toLocaleDateString() + " - " + new Date(message.createdAt).toLocaleTimeString());
-    //     this.messages.push(m);
-    //   }
-    // })
+    this.ioClient = io({
+      reconnection: false,
+    });
+    this.socket = io(`/${this.event._id}`);
+    this.socket.on('history', (messages: Array<MessageEvent>) => {
+      messages.forEach(message => {
+        this.messages.push(this.getMessageWithLocaleDateString(message));
+      })
+    });
+    this.socket.on('message', (message: MessageEvent) => {
+      this.messages.push(this.getMessageWithLocaleDateString(message));
+    });
+    this.socket.on('deleteMessage', (message: MessageEvent) => {
+      const index = this.messages.findIndex((msg) => msg._id === message._id);
+      this.messages.splice(index, 1);
+    })
   }
 
   submitMessage() {
-    // if (this.currentUser._id) {
-    //   if (this.message && this.message !== "") {
-    //     const message = new MessageChat();
-    //     message.setMessage(
-    //       this.message,
-    //       this.currentUser._id,
-    //       this.currentUser.name,
-    //       this.event._id);
-    //     this.chatService.saveMessage(message).subscribe((message: MessageChat) => {
-    //       this.messages.push(message);
-    //     });
-    //     this.input.nativeElement.focus();
-    //     this.message = "";
-    //   }
-    // } else {
-    //   this.errorOnPublish = "Vous devez être connecté avec un compte pour publier"
-    // }
+    if (this.currentUser._id) {
+      if (this.message && this.message !== "") {
+        const message = new MessageEvent();
+        message.setMessage(
+          this.message,
+          this.currentUser._id,
+          this.currentUser.name,
+          this.event._id);
+        this.socket.emit("message", message);
+        this.input.nativeElement.focus();
+        this.message = "";
+      }
+    } else {
+      this.errorOnPublish = "Connectez vous pour écrire un post"
+    }
   }
 
-  // deleteMessage(id: string) {
-  //   Swal.fire({
-  //     title: 'Supprimer votre commentaire ?',
-  //     showCancelButton: true,
-  //     confirmButtonText: 'Ok',
-  //     cancelButtonText: 'No'
-  //   }).then((result) => {
-  //     if (result.value) {
-  //       this.chatService.deleteEvent(id).subscribe(() => {
-  //         const index = this.messages.findIndex((message) => message._id === id);
-  //         this.messages.splice(index, 1);
-  //       })
-  //     }
-  //   })
-  // }
+  getMessageWithLocaleDateString(message: MessageEvent): MessageEvent {
+    return new MessageEvent(message._id, message.message, message.type,
+      message.userId, message.userName, message.eventId,
+      new Date(message.createdAt).toLocaleDateString() + " - " + new Date(message.createdAt).toLocaleTimeString());
+  }
+
+  deleteMessage(id: string) {
+    Swal.fire({
+      title: 'Supprimer votre commentaire ?',
+      showCancelButton: true,
+      confirmButtonText: 'Ok',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.socket.emit("deleteMessage", { id: id });
+      }
+    })
+  }
 
   enter(event: KeyboardEvent) {
     if (event.code === "Enter" || event.code === "NumpadEnter") {
-      //this.submitMessage();
+      this.submitMessage();
     }
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    if (this.subCurrentUser) { this.subCurrentUser.unsubscribe(); }
+    if (this.subInitChat) { this.subInitChat.unsubscribe(); }
+    if (this.subMessages) { this.subMessages.unsubscribe(); }
+    this.socket.emit("close");
   }
 }

@@ -8,10 +8,6 @@ app-friend-chat{
   width: 50vh;
 }
 
-app-friend-list{
-  height: auto;
-}
-
 .chats{
   position: absolute;
   bottom: 0;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { User } from '../shared/models/user.model';
 import { UserService } from '../shared/services/user.service';
@@ -8,7 +8,7 @@ import { UserService } from '../shared/services/user.service';
   templateUrl: './friend-list.component.html',
   styleUrls: ['./friend-list.component.css']
 })
-export class FriendListComponent implements OnInit {
+export class FriendListComponent implements OnInit, OnDestroy {
 
   @Output() friend = new EventEmitter();
   public subscription: Subscription;
@@ -16,7 +16,6 @@ export class FriendListComponent implements OnInit {
   user: User;
 
   constructor(private userService: UserService) {
-    this.user = new User();
   }
 
   ngOnInit(): void {
@@ -35,6 +34,14 @@ export class FriendListComponent implements OnInit {
 
   showList() {
     this.show = !this.show;
+  }
+
+  getHeight(length: number) {
+    return `${length * 10}px;`
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
 }

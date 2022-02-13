@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MessageChat } from '../models/messageChat';
+import { MessageEvent } from '../models/messageEvent';
 import { RoomChat } from '../models/roomChat';
 
 @Injectable({
@@ -22,31 +23,10 @@ export class ChatService {
     })
   }
 
-  public initChat(roomName: string, user: string) {
-    return this.http.get<String>('/api/chat/initChat', {
-      params: {
-        roomName: roomName,
-        user: user
-      }
-    });
-  }
-
-  public getMessages(eventId: string): Observable<Array<MessageChat>> {
-    return this.http.get<Array<MessageChat>>('/api/event/getMessages', {
+  public getMessages(eventId: string): Observable<Array<MessageEvent>> {
+    return this.http.get<Array<MessageEvent>>('/api/event/getMessages', {
       params: {
         eventId: eventId
-      }
-    });
-  }
-
-  public saveMessage(message: MessageChat): Observable<MessageChat> {
-    return this.http.post<MessageChat>('/api/event/saveMessage', message);
-  }
-
-  public deleteEvent(messageId: string): Observable<MessageChat> {
-    return this.http.delete<MessageChat>('/api/chat/deleteMessage', {
-      params: {
-        messageId: messageId
       }
     });
   }

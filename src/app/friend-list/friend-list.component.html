@@ -1,6 +1,6 @@
-<div *ngIf="user">
+<div *ngIf="user.name !== undefined">
   <h6 (click)="showList()">Discussions</h6>
-  <div class="list" *ngIf="show">
+  <div class="list" [style.height.px]="user.amis.length*30" *ngIf="show">
     <ul *ngFor="let ami of user.amis">
       <li (click)="addChat(ami)">{{ ami }}</li>
     </ul>

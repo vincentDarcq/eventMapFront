@@ -25,14 +25,14 @@ export class AuthService {
     console.log("init timer")
     return timer(1000, 250000).pipe(
       switchMap(() => {
-        if (localStorage.getItem('jwt')) {
+        if (sessionStorage.getItem('jwt')) {
           return this.http.get<string>('/api/auth/refresh-token').pipe(
             tap((token: string) => {
               this.jwtToken.next({
                 isAuthenticated: true,
                 token: token
               });
-              localStorage.setItem('jwt', token);
+              sessionStorage.setItem('jwt', token);
             }
             ))
         } else {
@@ -44,13 +44,13 @@ export class AuthService {
         isAuthenticated: false,
         token: null
       });
-      localStorage.removeItem('jwt');
+      sessionStorage.removeItem('jwt');
       this.subscription.unsubscribe();
     });
   }
 
   private initToken() {
-    const token = localStorage.getItem('jwt');
+    const token = sessionStorage.getItem('jwt');
     if (token) {
       this.jwtToken.next({
         isAuthenticated: true,
@@ -78,7 +78,7 @@ export class AuthService {
           isAuthenticated: true,
           token: token,
         });
-        localStorage.setItem('jwt', token);
+        sessionStorage.setItem('jwt', token);
         //this.subscription = this.initTimer();
       })
     );
@@ -97,7 +97,7 @@ export class AuthService {
       isAuthenticated: false,
       token: null,
     });
-    localStorage.removeItem('jwt');
+    sessionStorage.removeItem('jwt');
     this.route.navigate(['/']);
   }
 }

@@ -1,10 +1,10 @@
 <div *ngIf="friend">
   <div class="chatHead" fxLayout="row" fxLayoutGap="5px">
-    <p class="friend">{{ friend }}</p>
+    <p class="friend">{{ friend.name }}</p>
     <span fxFlex="auto"></span>
     <p class="close" (click)="closeChat(friend)">X</p>
   </div>
-  <div id="messages">
+  <div id="messages-box">
     <div *ngFor="let message of messages" class="message">
       <div [ngClass]="classForParagraphe(message)" class="paragraphe">{{ message.message }}</div>
     </div>

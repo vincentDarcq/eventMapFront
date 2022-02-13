@@ -65,5 +65,6 @@ export class UserService {
     }
     this.currentUser.next(currentUser);
   }
+
 }
 

@@ -4,13 +4,23 @@ export class User {
     name: string;
     profile_type: string;
     amis: Array<string>;
+    pri: string;
+    pub: string;
 
-    constructor(id?: string, email?: string, name?: string, profile_type?: string, amis?: Array<string>) {
+    constructor(
+        id?: string,
+        email?: string,
+        name?: string,
+        profile_type?: string,
+        amis?: Array<string>,
+        pri?: string
+    ) {
         this._id = id;
         this.email = email;
         this.name = name;
         this.profile_type = profile_type;
         this.amis = amis;
+        this.pri = pri;
     }
 
     public setEmail(email: string) {

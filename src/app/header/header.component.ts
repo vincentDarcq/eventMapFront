@@ -101,7 +101,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public logout(mode?: string) {
     this.authService.logout();
     this.userService.currentUser.next(null);
-    localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('currentUser');
     if (mode) {
       this.displayList(mode);
     }
