@@ -9,6 +9,8 @@
                 <mat-form-field>
                     <input formControlName="name" matInput type="text" placeholder="nom" />
                 </mat-form-field>
+                <input type="file" (change)="onPicture($event)" fxHide="true" name="picture" id="picture" />
+                <label for="picture">photo (optionnel)</label>
                 <mat-radio-group formControlName="profile_type" name="profile_type" fxLayoutGap="20px" required>
                     <mat-radio-button value="public">public</mat-radio-button>
                     <mat-radio-button value="privé">privé</mat-radio-button>

@@ -93,30 +93,20 @@ export class EventService {
   }
 
   public createEvent(event: Event, formData?: FormData) {
-    this.http.post<Event>('/api/event/create', event).subscribe((e) => {
+    this.http.post<Event>('/api/event/create', event).subscribe((ev: Event) => {
       if (formData) {
         this.http.post<any>('/api/event/uploadImages', formData, {
           params: {
-            eventId: e._id
+            eventId: ev._id
           }
-        }).subscribe((upload) => {
-          if (upload.image1) {
-            e.image1 = upload.image1;
-          }
-          if (upload.image2) {
-            e.image2 = upload.image2;
-          }
-          if (upload.image3) {
-            e.image3 = upload.image3;
-          }
-          this.addEvent(e);
+        }).subscribe((event: Event) => {
+          this.addEvent(event);
         })
       } else {
-        this.addEvent(e);
+        this.addEvent(ev);
       }
     });
   }
-
 
   private addEvent(e: Event) {
     e.setTimeLeft(this.timeBefore(e.dateDebut));
@@ -128,28 +118,19 @@ export class EventService {
   }
 
   public editEvent(event: Event, formData?: FormData) {
-    this.http.put<Event>('/api/event/modify', event).subscribe((e) => {
-      const index = this.getIndexEvent(e._id);
+    this.http.put<Event>('/api/event/modify', event).subscribe((ev: Event) => {
+      const index = this.getIndexEvent(ev._id);
       if (formData) {
         this.http.post<any>('/api/event/uploadImages', formData, {
           params: {
-            eventId: e._id
+            eventId: ev._id
           }
-        }).subscribe((upload) => {
-          if (upload.image1) {
-            e.image1 = upload.image1;
-          }
-          if (upload.image2) {
-            e.image2 = upload.image2;
-          }
-          if (upload.image3) {
-            e.image3 = upload.image3;
-          }
-          this.replaceEvent(index, e);
+        }).subscribe((event: Event) => {
+          this.replaceEvent(index, event);
         })
       } else {
         if (index >= 0) {
-          this.replaceEvent(index, e);
+          this.replaceEvent(index, ev);
         }
       }
     });
@@ -188,7 +169,7 @@ export class EventService {
       }
     }).subscribe(() => {
       let events = this.events.value;
-      const index = events.findIndex((event) => event._id === eventId);
+      const index = this.events.value.findIndex((event) => event._id === eventId);
       events.splice(index, 1);
       this.events.next(events);
     }, (e) => {

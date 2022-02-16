@@ -6,6 +6,8 @@ export class User {
     amis: Array<string>;
     pri: string;
     pub: string;
+    picture: string;
+    formData: FormData;
 
     constructor(
         id?: string,
@@ -33,6 +35,10 @@ export class User {
 
     public setAmis(amis: Array<string>) {
         this.amis = amis;
+    }
+
+    public setPicture(picture: string) {
+        this.picture = picture;
     }
 
 }

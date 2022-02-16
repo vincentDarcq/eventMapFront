@@ -51,6 +51,10 @@ button{
   color: white;
 }
 
+.messageUser a{
+  color: white;
+}
+
 .messageFriend{
   float: left;
   background-color: rgb(240, 229, 229);

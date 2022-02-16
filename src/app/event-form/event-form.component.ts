@@ -42,7 +42,6 @@ export class EventFormComponent implements OnInit, DoCheck, OnDestroy {
   invitations: FormControl;
   errorPlace: string;
   errorCreator: string;
-  serverImg: String = "/upload?img=";
   public subscription: Subscription;
 
   constructor(
@@ -141,19 +140,15 @@ export class EventFormComponent implements OnInit, DoCheck, OnDestroy {
       this.errorPlace = "Vous devez sélectionner une adresse parmis celles proposées en fonction de votre recherche";
       return;
     }
+    this.whichCreator();
+    this.makeDate();
+    this.checkScope();
     if (this.id) {
-      this.whichCreator();
-      this.makeDate();
-      this.checkScope();
       this.eventService.editEvent(this.newEvent, this.newEvent.formData);
-      this.router.navigate(['/']);
     } else {
-      this.whichCreator();
-      this.makeDate();
-      this.checkScope();
       this.eventService.createEvent(this.newEvent, this.newEvent.formData);
-      this.router.navigate(['/']);
     }
+    this.router.navigate(['/']);
   }
 
   checkScope() {

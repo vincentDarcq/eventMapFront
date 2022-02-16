@@ -21,6 +21,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   public subCurrentUser: Subscription;
   public subEvents: Subscription;
   public subNetwork: Subscription;
+  serverImg: String = "/upload?img=";
 
   constructor(
     private userService: UserService,
@@ -35,6 +36,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subCurrentUser = this.userService.currentUser.subscribe((user: User) => {
       this.user = new User(user._id, user.email, user.name, user.profile_type, user.amis);
+      this.user.setPicture(user.picture);
+      console.log(user.picture);
       this.subEvents = this.eventService.getEventsByUser(this.user.email).subscribe((events: Array<Event>) => {
         this.events = events;
       })

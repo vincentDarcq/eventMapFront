@@ -1,14 +1,15 @@
 <div class="profile" fxLayout="row" fxLayout.xs="column">
-    <mat-card class="p-2 user" fxLayout.xs="row" fxLayoutGap.xs="15px">
-        <mat-card-content class="card-compte" *ngIf="user" fxLayout="column" fxLayoutGap="15px">
-            <div class="mail">email : {{ user.email }}</div>
-            <div>name : {{ user.name }}</div>
-        </mat-card-content>
+    <div class="p-4 user" fxLayout.xs="row" fxLayoutGap.xs="15px">
+        <img *ngIf="user.picture" [src]="serverImg+user.picture" alt="profile_pic">
+        <div class="card-compte" *ngIf="user" fxLayout="column" fxLayoutGap="15px">
+            <div class="ids">{{ user.email }}</div>
+            <div class="ids">{{ user.name }}</div>
+        </div>
         <a class="nav-link link-change-pass" [routerLink]="['/editPass', { email : user.email } ]">
             <button mat-raised-button class="pass">Changer Mot de Passe</button>
         </a>
-    </mat-card>
-    <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="5px" fxLayoutAlign="center start">
+    </div>
+    <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutGap="5px" fxLayoutAlign="center start" fxFlex="auto">
         <mat-card-content *ngFor="let event of events;" id="events">
             <div class="card-body" id="event" [routerLink]="['/eventDetail', { _id: event._id }]">
                 <a [routerLink]="['/eventDetail', { _id: event._id }]">{{ event.name }}</a><br>

@@ -45,8 +45,16 @@ export class UserService {
     });
   }
 
+  public uploadProfilePicture(name: string, picture: FormData): Observable<User> {
+    return this.http.post<User>(`/api/user/uploadImages`, picture, {
+      params: {
+        user: name
+      }
+    });
+  }
+
   public getUser(user: string): Observable<User> {
-    return this.http.get<User>(`/api/auth/user`, {
+    return this.http.get<User>(`/api/user/getUser`, {
       params: {
         user: user
       }

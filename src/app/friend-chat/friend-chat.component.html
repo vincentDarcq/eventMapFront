@@ -6,7 +6,8 @@
   </div>
   <div id="messages-box">
     <div *ngFor="let message of messages" class="message">
-      <div [ngClass]="classForParagraphe(message)" class="paragraphe">{{ message.message }}</div>
+      <div [ngClass]="classForParagraphe(message)" class="paragraphe"
+        [innerHTML]="sanitizer.bypassSecurityTrustHtml(message.message)"></div>
     </div>
   </div>
   <div fxLayout="row" fxLayoutGap="15px">

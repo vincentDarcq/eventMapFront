@@ -89,7 +89,7 @@ export class AuthService {
     oldPass: string;
     newPass: string
   }) {
-    return this.http.post<string>('/api/auth/editPass', infos);
+    return this.http.post<string>('/api/user/editPass', infos);
   }
 
   public logout() {

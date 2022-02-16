@@ -12,6 +12,7 @@ import {
   AfterViewInit,
   DoCheck
 } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import * as io from 'socket.io-client';
 import { MessageChat } from '../shared/models/messageChat';
@@ -46,7 +47,8 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
   constructor(
     private userService: UserService,
     private chatService: ChatService,
-    private openpgpService: OpenpgpService
+    private openpgpService: OpenpgpService,
+    private sanitizer: DomSanitizer
   ) {
   }
 
@@ -91,12 +93,49 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
     message.user === this.user.name ?
       this.openpgpService.decryptMessage(this.friend.pri, message.message).then(res => {
         message.message = res;
+        const link = this.containsLink(message.message);
+        if (link !== -1) {
+          message.message = this.insertLink(message, link);
+        }
         this.messages.push(message);
       }) :
       this.openpgpService.decryptMessage(this.user.pri, message.message).then(res => {
         message.message = res;
+        const link = this.containsLink(message.message);
+        if (link !== -1) {
+          message.message = this.insertLink(message, link);
+        }
         this.messages.push(message);
       });
+  }
+
+  private containsLink(message: string): number {
+    if (message.indexOf("http") !== -1 || message.indexOf("https")) {
+      let index = message.indexOf("http");
+      if (index === -1) {
+        index = message.indexOf("https");
+        return index;
+      }
+      return index;
+    }
+  }
+
+  private insertLink(message: MessageChat, index: number): string {
+    const indexEnd = message.message.substring(index, message.message.length).indexOf(" ");
+    if (index === 0 && indexEnd === -1) {
+      return message.user === this.user.name ?
+        '<a href="' + message.message + '" target="_blank" style="color: white;">' + message.message + '</a>' :
+        '<a href="' + message.message + '" target="_blank">' + message.message + '</a>';
+    }
+    if (indexEnd === -1) {
+      return message.user === this.user.name ?
+        message.message.substring(0, index) + '<a href="' + message.message.substring(index) + '" target="_blank" style="color: white;">' + message.message.substring(index) + '</a>' :
+        message.message.substring(0, index) + '<a href="' + message.message.substring(index) + '" target="_blank">' + message.message.substring(index) + '</a>'
+    } else {
+      return message.user === this.user.name ?
+        message.message.substring(0, index) + '<a href="' + message.message.substring(index, indexEnd) + '" target="_blank" style="color: white;">' + message.message.substring(index, indexEnd) + '</a>' + message.message.substring(indexEnd, message.message.length) :
+        message.message.substring(0, index) + '<a href="' + message.message.substring(index, indexEnd) + '" target="_blank">' + message.message.substring(index, indexEnd) + '</a>' + message.message.substring(indexEnd, message.message.length);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
