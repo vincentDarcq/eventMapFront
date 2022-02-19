@@ -1,5 +1,5 @@
 .link {
-  outline: 0;
+  /* outline: 0; */
   cursor: pointer;
 }
 input{
@@ -48,6 +48,8 @@ button {
 
   .phone {
     display: block;
+    margin-right: 0 !important;
+    padding-left: 2rem;
   }
 
   .select-bars{
@@ -76,7 +78,7 @@ button {
   }
 
   .mat-toolbar{
-    height: 10vh;
+    height: 15vh;
     padding: 16px;
   }
 
@@ -93,26 +95,27 @@ button {
   }
 
   input{
-    width: 125px;
+    width: 9rem;
     font-size: 12px;
     padding-left: 10px !important;
   }
 
   mat-toolbar > button {
     background-color: #54d9e3;
-    text-indent: -9999px;
-    height: 30px;
+    /* text-indent: -9999px; */
+    height: 2rem;
+    width: 10rem;
     line-height: 0;
     padding: 0px;
   }
 
-  mat-toolbar > button::after{
+  /* mat-toolbar > button::after{
     padding: 0px;
     content: "Créer";
     text-indent: 0;
     display: block;
     line-height: initial;
-  }
+  } */
 
   div > button {
     margin-left: 0px !important;

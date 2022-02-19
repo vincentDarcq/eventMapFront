@@ -7,11 +7,19 @@
   <div id="messages-box">
     <div *ngFor="let message of messages" class="message">
       <div [ngClass]="classForParagraphe(message)" class="paragraphe"
-        [innerHTML]="sanitizer.bypassSecurityTrustHtml(message.message)"></div>
+        [innerHTML]="sanitizer.bypassSecurityTrustHtml(message.message)">
+      </div>
+      <div *ngIf="user.name === message.user" class="trash">
+        <span class="far fa-trash-alt" (click)="deleteMessage(message)"></span>
+      </div>
     </div>
   </div>
+  <emoji-mart class="emoji-mart" *ngIf="isEmojiPickerVisible" (emojiSelect)="addEmoji($event)"></emoji-mart>
   <div fxLayout="row" fxLayoutGap="15px">
-    <input [(ngModel)]="message" type="text" #input (keyup)="enter($event)" />
+    <div class="container">
+      <input [(ngModel)]="message" type="text" #input (keyup)="enter($event)" />
+      <button (click)="isEmojiPickerVisible = !isEmojiPickerVisible;">😀</button>
+    </div>
     <button (click)="sendMessage()">
       <svg width="20px" height="20px" viewBox="0 0 24 24">
         <path

@@ -51,6 +51,9 @@ import { FriendListComponent } from './friend-list/friend-list.component';
 import { FriendChatComponent } from './friend-chat/friend-chat.component';
 import { SanitizeHtmlPipe } from './sanitize-html.pipe';
 
+//emojis
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -82,7 +85,8 @@ import { SanitizeHtmlPipe } from './sanitize-html.pipe';
     BrowserAnimationsModule,
     FlexLayoutModule,
     NgxMaterialTimepickerModule,
-    SocialLoginModule
+    SocialLoginModule,
+    PickerModule
   ],
   providers: [
     {

@@ -69,3 +69,38 @@ path{
   fill: rgb(22, 140, 213);
 }
 
+.fa-trash-alt {
+  cursor: pointer;
+}
+
+.trash{
+  float: right;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 100% 0%;
+  width: 85%;
+  margin: 0;
+  padding: 0;
+}
+.container > button {
+   background: transparent;
+   border: 0;
+   transform: translateX(-40px);
+   cursor: pointer;
+   margin: 0;
+   padding: 0;
+   outline: none;
+}
+
+emoji-mart{
+  position: absolute;
+  left: 0;
+  bottom: 5vh;
+  z-index: 10;
+}
+
+::ng-deep .emoji-mart-preview{
+  display: none !important;
+}

@@ -40,7 +40,6 @@ export class SignupComponent implements OnInit, OnDestroy {
   onPicture(event) {
     if (event.target.files[0]) {
       this.picture.append('picture', event.target.files[0], event.target.files[0].name);
-      console.log(this.picture.get('picture'));
     }
   }
 

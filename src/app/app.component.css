@@ -3,6 +3,7 @@
 }
 
 app-friend-chat{
+  position: relative;
   border: solid 2px rgb(55, 94, 152);
   margin: 0 !important;
   width: 50vh;
@@ -15,3 +16,11 @@ app-friend-chat{
   float: right;
   z-index: 9999;
 }
+
+@media only screen and (max-width: 500px){
+  app-friend-chat{
+    width: 15rem;
+    height: 5rem;
+  }
+}
+

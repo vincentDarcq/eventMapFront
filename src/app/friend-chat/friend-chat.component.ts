@@ -21,6 +21,7 @@ import { User } from '../shared/models/user.model';
 import { ChatService } from '../shared/services/chat.service';
 import { OpenpgpService } from '../shared/services/openpgp.service';
 import { UserService } from '../shared/services/user.service';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
 
 @Component({
   selector: 'app-friend-chat',
@@ -39,8 +40,9 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
   public subRoomChat: Subscription;
   public subChat: Subscription;
   roomName: string;
-  message: string;
+  message: string = "";
   messages: Array<MessageChat> = new Array<MessageChat>();
+  public isEmojiPickerVisible: boolean;
 
   @ViewChild("input") input: ElementRef;
 
@@ -74,6 +76,16 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
     });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (typeof changes.inputFriend !== 'undefined' && !this.friend) {
+      this.friend = new User();
+      this.friend.name = changes.inputFriend.currentValue;
+      this.subUser = this.userService.getUser(this.friend.name).subscribe((user: User) => {
+        this.friend = user;
+      })
+    }
+  }
+
   private initChat(roomChat: RoomChat) {
     this.roomName = roomChat.roomName;
     this.socket = io(`/${this.roomName}`);
@@ -81,11 +93,13 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
       for (let message of messages) {
         this.pushMessage(message);
       }
-      document.getElementById('messages-box').scrollTop = document.getElementById('messages-box').scrollHeight;
     });
     this.socket.on('message', (message: MessageChat) => {
       this.pushMessage(message);
-      document.getElementById('messages-box').scrollTop = document.getElementById('messages-box').scrollHeight;
+    });
+    this.socket.on("deletedOne", (message: MessageChat) => {
+      const msg = this.messages.findIndex(mess => mess._id === message._id);
+      this.messages.splice(msg, 1);
     });
   }
 
@@ -126,8 +140,7 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
       return message.user === this.user.name ?
         '<a href="' + message.message + '" target="_blank" style="color: white;">' + message.message + '</a>' :
         '<a href="' + message.message + '" target="_blank">' + message.message + '</a>';
-    }
-    if (indexEnd === -1) {
+    } else if (indexEnd === -1) {
       return message.user === this.user.name ?
         message.message.substring(0, index) + '<a href="' + message.message.substring(index) + '" target="_blank" style="color: white;">' + message.message.substring(index) + '</a>' :
         message.message.substring(0, index) + '<a href="' + message.message.substring(index) + '" target="_blank">' + message.message.substring(index) + '</a>'
@@ -138,14 +151,9 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
     }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (typeof changes.inputFriend !== 'undefined' && !this.friend) {
-      this.friend = new User();
-      this.friend.name = changes.inputFriend.currentValue;
-      this.subUser = this.userService.getUser(this.friend.name).subscribe((user: User) => {
-        this.friend = user;
-      })
-    }
+  public addEmoji(event) {
+    this.message = `${this.message}${event.emoji.native}`;
+    this.isEmojiPickerVisible = false;
   }
 
   public async sendMessage() {
@@ -158,6 +166,19 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
     if (event.code === "Enter" || event.code === "NumpadEnter") {
       this.sendMessage();
     }
+  }
+
+  deleteMessage(message: MessageChat) {
+    Swal.fire({
+      title: 'Supprimer votre message ?',
+      showCancelButton: true,
+      confirmButtonText: 'Ok',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.socket.emit("deleteOne", { id: message._id });
+      }
+    })
   }
 
   setFriend(friend: string) {

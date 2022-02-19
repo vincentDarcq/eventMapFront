@@ -1,6 +1,23 @@
-<mat-toolbar fxLayout="row" fxLayoutGap="15px">
+<mat-toolbar fxLayout="row wrap" fxLayoutGap="15px">
     <img src="../../assets/logo_eventMap.png" alt="logo" routerLink="/">
     <button mat-raised-button class="link" routerLink="/createEvent">Créer un évènement</button>
+    <div (click)="displayList('notconnected')" class="phone fas fa-bars fa-2x" *ngIf="!jwtToken.isAuthenticated">
+    </div>
+    <div *ngIf="notConnected" class="select-bars" fxLayout="column">
+        <a class="fas fa-times fa-2x" (click)="displayList('notconnected')"></a>
+        <button mat-raised-button class="link" (click)="displayList('notconnected')"
+            routerLink="/signin">Connexion</button>
+        <button mat-raised-button class="link" (click)="displayList('notconnected')"
+            routerLink="/signup">Inscription</button>
+    </div>
+    <div (click)="displayList('connected')" class="phone fas fa-bars fa-2x" *ngIf="jwtToken.isAuthenticated">
+    </div>
+    <div *ngIf="connected" class="select-bars" fxLayout="column">
+        <a class="fas fa-times fa-2x" (click)="displayList('connected')"></a>
+        <button mat-raised-button class="link" (click)="displayList('connected')" routerLink="/profile">Mon
+            compte</button>
+        <button mat-raised-button class="link" (click)="logout('connected')">Deconnexion</button>
+    </div>
     <input placeholder="Chercher un event" [(ngModel)]="eventSearch" (keyup)="searchEvents()" type="text"
         class="form-control" id="search" [matAutocomplete]="autoEvents" />
     <mat-autocomplete #autoEvents="matAutocomplete">
@@ -25,23 +42,5 @@
             <button mat-raised-button class="link" routerLink="/profile">Mon compte</button>
             <button mat-raised-button class="link" (click)="logout()">Deconnexion</button>
         </span>
-    </div>
-    <span fxFlex="1"></span>
-    <div (click)="displayList('notconnected')" class="phone fas fa-bars fa-2x" *ngIf="!jwtToken.isAuthenticated">
-    </div>
-    <div *ngIf="notConnected" class="select-bars" fxLayout="column">
-        <a class="fas fa-times fa-2x" (click)="displayList('notconnected')"></a>
-        <button mat-raised-button class="link" (click)="displayList('notconnected')"
-            routerLink="/signin">Connexion</button>
-        <button mat-raised-button class="link" (click)="displayList('notconnected')"
-            routerLink="/signup">Inscription</button>
-    </div>
-    <div (click)="displayList('connected')" class="phone fas fa-bars fa-2x" *ngIf="jwtToken.isAuthenticated">
-    </div>
-    <div *ngIf="connected" class="select-bars" fxLayout="column">
-        <a class="fas fa-times fa-2x" (click)="displayList('connected')"></a>
-        <button mat-raised-button class="link" (click)="displayList('connected')" routerLink="/profile">Mon
-            compte</button>
-        <button mat-raised-button class="link" (click)="logout('connected')">Deconnexion</button>
     </div>
 </mat-toolbar>

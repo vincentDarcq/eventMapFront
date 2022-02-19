@@ -5,6 +5,7 @@ import { User } from './shared/models/user.model';
 import { AuthService } from './shared/services/auth.service';
 import { MetaAndTitleService } from './shared/services/meta-and-title.service';
 import { UserService } from './shared/services/user.service';
+import { HostListener } from "@angular/core";
 
 @Component({
   selector: 'app-root',
@@ -16,12 +17,15 @@ export class AppComponent implements OnInit {
   public friends: Array<String> = [];
   title = 'EventMap';
   public subCurrentUser: Subscription;
+  screenHeight: number;
+  screenWidth: number;
 
   constructor(
     private authService: AuthService,
     private metaAndTitleService: MetaAndTitleService,
     private userService: UserService
   ) {
+    this.getScreenSize();
   }
 
   ngOnInit(): void {
@@ -32,7 +36,17 @@ export class AppComponent implements OnInit {
     })
   }
 
+  @HostListener('window:resize', ['$event'])
+  getScreenSize() {
+    this.screenHeight = window.innerHeight;
+    this.screenWidth = window.innerWidth;
+    console.log(this.screenHeight, this.screenWidth);
+  }
+
   openChat(friend: string) {
+    if (this.screenWidth < 600) {
+      this.friends = new Array();
+    }
     this.friends.push(friend);
   }
 
