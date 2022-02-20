@@ -1,5 +1,6 @@
 .chatHead {
-  border: solid 1px black;
+  background: rgb(210, 206, 206);
+  border-radius: 10px;
   height: 5vh;
 }
 

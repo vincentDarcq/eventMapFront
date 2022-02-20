@@ -3,7 +3,7 @@
     <h3>{{ profile }}</h3>
     <span fxFlex="auto"></span>
     <div class="ami" *ngIf="currentUser && friend">
-      Vous êtes amis avec {{ profile }}
+      Vous êtes ami avec {{ profile }}
     </div>
     <div *ngIf="currentUser && !toAnswer && !friend">
       <button *ngIf="this.user.profile_type === 'privé' && currentUser.profile_type === 'privé' && !asked"

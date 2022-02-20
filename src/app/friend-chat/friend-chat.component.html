@@ -2,7 +2,7 @@
   <div class="chatHead" fxLayout="row" fxLayoutGap="5px">
     <p class="friend">{{ friend.name }}</p>
     <span fxFlex="auto"></span>
-    <p class="close" (click)="closeChat(friend)">X</p>
+    <p class="close" (click)="closeChat(friend.name)">X</p>
   </div>
   <div id="messages-box">
     <div *ngFor="let message of messages" class="message">

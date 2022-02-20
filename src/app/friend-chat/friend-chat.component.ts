@@ -70,9 +70,7 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
     });
     this.subCurrentUser = this.userService.currentUser.subscribe((user: User) => {
       this.user = new User(user._id, user.email, user.name, user.profile_type, user.amis, user.pri);
-      this.subRoomChat = this.chatService.getRoomChat(this.user.name, this.friend.name).subscribe((roomChat: RoomChat) => {
-        this.initChat(roomChat);
-      });
+      this.initChat();
     });
   }
 
@@ -82,24 +80,40 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
       this.friend.name = changes.inputFriend.currentValue;
       this.subUser = this.userService.getUser(this.friend.name).subscribe((user: User) => {
         this.friend = user;
+        this.fetchMessages();
       })
     }
   }
 
-  private initChat(roomChat: RoomChat) {
-    this.roomName = roomChat.roomName;
-    this.socket = io(`/${this.roomName}`);
-    this.socket.on('history', (messages: Array<MessageChat>) => {
-      for (let message of messages) {
-        this.pushMessage(message);
+  private initChat() {
+    const sub = this.chatService.rooms.subscribe((mapRooms: Map<string, string>) => {
+      this.roomName = mapRooms.get(this.friend.name);
+      if (this.roomName) {
+        this.socket = io(`/${this.roomName}`);
+        // this.socket.on('history', (messages: Array<MessageChat>) => {
+        //   for (let message of messages) {
+        //     this.pushMessage(message);
+        //   }
+        // });
+        this.socket.on('message', (message: MessageChat) => {
+          this.pushMessage(message);
+        });
+        this.socket.on("deletedOne", (message: MessageChat) => {
+          const msg = this.messages.findIndex(mess => mess._id === message._id);
+          this.messages.splice(msg, 1);
+        });
       }
-    });
-    this.socket.on('message', (message: MessageChat) => {
-      this.pushMessage(message);
-    });
-    this.socket.on("deletedOne", (message: MessageChat) => {
-      const msg = this.messages.findIndex(mess => mess._id === message._id);
-      this.messages.splice(msg, 1);
+    })
+  }
+
+  private fetchMessages() {
+    const sub = this.chatService.messages.subscribe((messages: Map<string, Array<MessageChat>>) => {
+      if (this.messages.length === 0) {
+        const msgs = messages.get(this.friend.name);
+        if (msgs) {
+          msgs.forEach(m => this.messages.push(m))
+        }
+      }
     });
   }
 
@@ -159,6 +173,7 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
   public async sendMessage() {
     const encrypt = await this.openpgpService.encryptMessage(this.message, this.friend.pub);
     this.socket.emit("message", { message: encrypt, user: this.user.name, friend: this.friend, roomName: this.roomName });
+    this.chatService.initRooms();
     this.message = "";
   }
 

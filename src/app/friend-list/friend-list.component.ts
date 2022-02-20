@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { User } from '../shared/models/user.model';
+import { ChatService } from '../shared/services/chat.service';
 import { UserService } from '../shared/services/user.service';
 
 @Component({
@@ -15,7 +16,10 @@ export class FriendListComponent implements OnInit, OnDestroy {
   show: boolean = true;
   user: User;
 
-  constructor(private userService: UserService) {
+  constructor(
+    private userService: UserService,
+    private chatService: ChatService
+  ) {
   }
 
   ngOnInit(): void {

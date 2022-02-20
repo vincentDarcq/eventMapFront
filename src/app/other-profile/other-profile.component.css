@@ -5,10 +5,10 @@ span {
 .ami {
   width: 200px;
   text-align: center;
-  background-color: #12577f;
+  background-color: #2080b8;
   color: white;
   padding-top: 8px;
-  border-radius: 20%;
+  border-radius: 10px;
 }
 
 .container {
