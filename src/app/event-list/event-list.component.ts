@@ -15,6 +15,7 @@ export class EventListComponent implements OnInit, OnChanges {
   @Output() outputEvent = new EventEmitter();
   eventsFiltered: Array<Event>;
   event: Event;
+  noEvent: boolean = true;
   filter: Boolean = false;
 
   constructor(private eventService: EventService) {
@@ -30,6 +31,12 @@ export class EventListComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const inputFiltersType = changes.inputFiltersType;
     const inputFiltersDate = changes.inputFiltersDate;
+    const events = changes.events;
+    if (typeof events !== 'undefined' && events.currentValue.length > 0) {
+      this.noEvent = false;
+    } else {
+      this.noEvent = true;
+    }
     if (typeof inputFiltersType !== 'undefined' && inputFiltersType.currentValue !== null && typeof inputFiltersType.currentValue[0] !== 'undefined') {
       this.upgradeFilteredTypeEvents();
       this.filter = true;

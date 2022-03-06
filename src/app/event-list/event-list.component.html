@@ -1,4 +1,11 @@
 <div class="list">
+    <div *ngIf="noEvent" class="noEvent">
+        Bienvenue sur eventMap, site d'évènements autour de votre position.
+        <br>
+        Pas de point rouge sur la carte ? dézoomez pour voir plus loin.
+        <br>
+        Vous pouvez filtrer par types et par dates de commencement.
+    </div>
     <div *ngIf="filter; else nofilters">
         <div class="card" *ngFor="let event of eventsFiltered; let i = index">
             <div class="card-body" id="event" (click)="displayEvent(i)">

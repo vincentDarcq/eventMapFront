@@ -16,12 +16,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import * as io from 'socket.io-client';
 import { MessageChat } from '../shared/models/messageChat';
-import { RoomChat } from '../shared/models/roomChat';
 import { User } from '../shared/models/user.model';
 import { ChatService } from '../shared/services/chat.service';
 import { OpenpgpService } from '../shared/services/openpgp.service';
 import { UserService } from '../shared/services/user.service';
-import Swal from 'sweetalert2/dist/sweetalert2.js';
 
 @Component({
   selector: 'app-friend-chat',
@@ -43,6 +41,9 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
   message: string = "";
   messages: Array<MessageChat> = new Array<MessageChat>();
   public isEmojiPickerVisible: boolean;
+  confirm: boolean = false;
+  mini: boolean = false;
+  messageToDelete: MessageChat;
 
   @ViewChild("input") input: ElementRef;
 
@@ -54,10 +55,14 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
   ) {
   }
 
+  minimize() {
+    this.mini = !this.mini;
+  }
+
   ngDoCheck(): void {
-    if (this.messages.length > 0) {
-      document.getElementById('messages-box').scrollTop = document.getElementById('messages-box').scrollHeight;
-    }
+    // if (this.messages.length > 0 && document.getElementById('messages-box') !== null) {
+    //   document.getElementById('messages-box').scrollTop = document.getElementById('messages-box').scrollHeight;
+    // }
   }
 
   ngAfterViewInit(): void {
@@ -183,17 +188,20 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
     }
   }
 
+  confirmSupression() {
+    this.socket.emit("deleteOne", { id: this.messageToDelete._id });
+    this.messageToDelete = new MessageChat();
+    this.confirm = false;
+  }
+
+  annulerSupression() {
+    this.messageToDelete = new MessageChat();
+    this.confirm = false;
+  }
+
   deleteMessage(message: MessageChat) {
-    Swal.fire({
-      title: 'Supprimer votre message ?',
-      showCancelButton: true,
-      confirmButtonText: 'Ok',
-      cancelButtonText: 'No'
-    }).then((result) => {
-      if (result.value) {
-        this.socket.emit("deleteOne", { id: message._id });
-      }
-    })
+    this.messageToDelete = message;
+    this.confirm = true;
   }
 
   setFriend(friend: string) {
