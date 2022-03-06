@@ -102,6 +102,34 @@ emoji-mart{
   z-index: 10;
 }
 
+.popup{
+  position: absolute;
+  border-radius: 5px;
+  background-color: rgb(194, 189, 189);
+  padding: 2vh;
+  left: 12vh;
+  bottom: 15vh;
+  z-index: 10;
+}
+
 ::ng-deep .emoji-mart-preview{
   display: none !important;
+}
+
+.ok{
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  background-color: #3f51b5;
+  cursor: pointer;
+  width:fit-content;
+}
+
+.annuler{
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  background-color: #373839;
+  cursor: pointer;
+  width:fit-content;
 }

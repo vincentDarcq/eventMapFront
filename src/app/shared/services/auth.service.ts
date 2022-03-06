@@ -22,7 +22,6 @@ export class AuthService {
   }
 
   public initTimer() {
-    console.log("init timer")
     return timer(1000, 250000).pipe(
       switchMap(() => {
         if (sessionStorage.getItem('jwt')) {
