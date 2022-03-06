@@ -19,7 +19,7 @@
         <button mat-raised-button class="link" (click)="logout('connected')">Deconnexion</button>
     </div>
     <input placeholder="Chercher un event" [(ngModel)]="eventSearch" (keyup)="searchEvents()" type="text"
-        class="form-control" id="search" [matAutocomplete]="autoEvents" />
+        class="form-control" id="searchEvent" [matAutocomplete]="autoEvents" />
     <mat-autocomplete #autoEvents="matAutocomplete">
         <mat-option *ngFor="let event of eventsSearched; let i = index" [value]="event.name" (click)="selectEvent(i)">
             {{ event.name }}
