@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, timer } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { MessageChat } from '../models/messageChat';
 import { MessageEvent } from '../models/messageEvent';
 import { RoomChat } from '../models/roomChat';
@@ -20,6 +21,8 @@ export class ChatService {
   private mapRooms: Map<string, string> = new Map<string, string>();
   public messages: BehaviorSubject<Map<string, Array<MessageChat>>> = new BehaviorSubject(new Map<string, Array<MessageChat>>());
   private mapMessages: Map<string, Array<MessageChat>> = new Map<string, Array<MessageChat>>();
+  public subscription: Subscription;
+  public messagesSize: BehaviorSubject<Map<string, number>> = new BehaviorSubject(new Map<string, number>());
 
   constructor(
     private http: HttpClient,
@@ -45,16 +48,65 @@ export class ChatService {
           for (let friend of this.rooms.value.keys()) {
             const subMessagesChat = this.messagesChat(this.rooms.value.get(friend)).subscribe((messages: Array<MessageChat>) => {
               if (subMessagesChat) { subMessagesChat.unsubscribe(); }
+              this.messagesSize.next(new Map<string, number>().set(friend, messages.length))
               this.mapMessages.set(friend, messages);
-              if (this.mapMessages.size === this.rooms.value.size) {
-                this.decryptMessages();
-                this.messages.next(this.mapMessages);
-              }
+              this.decryptMessages();
+              this.messages.next(this.mapMessages);
             });
           }
         }
       });
     });
+  }
+
+  public initTimerMessagesChat(friend: string, roomName: string) {
+    this.subscription = timer(1000, 1500).pipe(
+      switchMap(() => {
+        const array = this.mapMessages.get(friend);
+        const createdAt = array[array.length - 1].createdAt;
+        return this.http.get<Array<MessageChat>>('/api/chat/getMessageChat', {
+          params: {
+            roomName: roomName,
+            date: createdAt
+          }
+        }).pipe(
+          tap((messages: Array<MessageChat>) => {
+            if (messages.length > 0) {
+              messages.forEach(async m => {
+                this.subUser = this.userService.getUser(friend).subscribe(async (f: User) => {
+                  const msg = m.user === this.user.name ?
+                    await this.decryptMessage(m, f.pri) : await this.decryptMessage(m, this.user.pri);
+                  if (this.mapMessages.get(friend).indexOf(msg) === -1) {
+                    this.mapMessages.get(friend).push(msg);
+                    this.messages.next(this.mapMessages);
+                  }
+                })
+              });
+            }
+          }
+          ))
+      })
+    ).subscribe(() => { }, err => { });
+  }
+
+  public async createMessageChat(
+    message: string,
+    user: string,
+    friend: string,
+    pub: string,
+    roomName: string
+  ) {
+    const encryptedMessage = await this.openpgpService.encryptMessage(message, pub);
+    const msg = new MessageChat();
+    msg.message = encryptedMessage;
+    msg.user = user;
+    msg.friend = friend;
+    msg.roomName = roomName;
+    this.http.post<MessageChat>('/api/chat/createMessageChat', msg).subscribe(() => { })
+  }
+
+  public closeChat() {
+    this.subscription.unsubscribe();
   }
 
   public getMessagesEvent(eventId: string): Observable<Array<MessageEvent>> {
@@ -80,6 +132,16 @@ export class ChatService {
         user2: ami
       }
     })
+  }
+
+  private async decryptMessage(message: MessageChat, pri: string): Promise<MessageChat> {
+    const ms = await this.openpgpService.decryptMessage(pri, message.message);
+    const msg = new MessageChat(message._id, ms, message.user, message.friend, message.createdAt)
+    const link = this.containsLink(msg.message);
+    if (link !== -1) {
+      msg.message = this.insertLink(msg, link);
+    }
+    return msg;
   }
 
   private decryptMessages() {
@@ -136,6 +198,10 @@ export class ChatService {
         message.message.substring(0, index) + '<a href="' + message.message.substring(index, indexEnd) + '" target="_blank" style="color: white;">' + message.message.substring(index, indexEnd) + '</a>' + message.message.substring(indexEnd, message.message.length) :
         message.message.substring(0, index) + '<a href="' + message.message.substring(index, indexEnd) + '" target="_blank">' + message.message.substring(index, indexEnd) + '</a>' + message.message.substring(indexEnd, message.message.length);
     }
+  }
+
+  public delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
 }

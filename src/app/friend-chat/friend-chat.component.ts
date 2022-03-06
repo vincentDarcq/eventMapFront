@@ -14,14 +14,11 @@ import {
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
-import * as io from 'socket.io-client';
 import { MessageChat } from '../shared/models/messageChat';
-import { RoomChat } from '../shared/models/roomChat';
 import { User } from '../shared/models/user.model';
 import { ChatService } from '../shared/services/chat.service';
 import { OpenpgpService } from '../shared/services/openpgp.service';
 import { UserService } from '../shared/services/user.service';
-import Swal from 'sweetalert2/dist/sweetalert2.js';
 
 @Component({
   selector: 'app-friend-chat',
@@ -39,24 +36,36 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
   public subUser: Subscription;
   public subRoomChat: Subscription;
   public subChat: Subscription;
+  public subFetch: Subscription;
+  public subMessagesSize: Subscription;
+  messageSize: number;
   roomName: string;
   message: string = "";
   messages: Array<MessageChat> = new Array<MessageChat>();
   public isEmojiPickerVisible: boolean;
+  mini: boolean = false;
+  confirm: boolean = false;
+  messageToDelete: MessageChat;
+  refreshed: boolean = false;
 
   @ViewChild("input") input: ElementRef;
 
   constructor(
     private userService: UserService,
     private chatService: ChatService,
-    private openpgpService: OpenpgpService,
     private sanitizer: DomSanitizer
   ) {
   }
 
+  minimize() {
+    this.mini = !this.mini;
+  }
+
   ngDoCheck(): void {
-    if (this.messages.length > 0) {
+    this.fetchMessages();
+    if (this.messages.length > 0 && document.getElementById('messages-box') !== null && this.refreshed) {
       document.getElementById('messages-box').scrollTop = document.getElementById('messages-box').scrollHeight;
+      this.refreshed = false;
     }
   }
 
@@ -65,12 +74,8 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
   }
 
   ngOnInit(): void {
-    this.ioClient = io({
-      reconnection: false,
-    });
     this.subCurrentUser = this.userService.currentUser.subscribe((user: User) => {
       this.user = new User(user._id, user.email, user.name, user.profile_type, user.amis, user.pri);
-      this.initChat();
     });
   }
 
@@ -80,100 +85,53 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
       this.friend.name = changes.inputFriend.currentValue;
       this.subUser = this.userService.getUser(this.friend.name).subscribe((user: User) => {
         this.friend = user;
-        this.fetchMessages();
+        this.subMessagesSize = this.chatService.messagesSize.subscribe((map: Map<string, number>) => {
+          this.messageSize = map.get(this.friend.name);
+        });
+        const sub = this.chatService.rooms.subscribe((mapRooms: Map<string, string>) => {
+          this.roomName = mapRooms.get(this.friend.name);
+          this.chatService.initTimerMessagesChat(this.friend.name, this.roomName);
+        });
       })
     }
   }
 
-  private initChat() {
-    const sub = this.chatService.rooms.subscribe((mapRooms: Map<string, string>) => {
-      this.roomName = mapRooms.get(this.friend.name);
-      if (this.roomName) {
-        this.socket = io(`/${this.roomName}`);
-        // this.socket.on('history', (messages: Array<MessageChat>) => {
-        //   for (let message of messages) {
-        //     this.pushMessage(message);
-        //   }
-        // });
-        this.socket.on('message', (message: MessageChat) => {
-          this.pushMessage(message);
-        });
-        this.socket.on("deletedOne", (message: MessageChat) => {
-          const msg = this.messages.findIndex(mess => mess._id === message._id);
-          this.messages.splice(msg, 1);
-        });
-      }
-    })
-  }
-
   private fetchMessages() {
-    const sub = this.chatService.messages.subscribe((messages: Map<string, Array<MessageChat>>) => {
-      if (this.messages.length === 0) {
+    if (!this.subFetch) {
+      this.subFetch = this.chatService.messages.subscribe((messages: Map<string, Array<MessageChat>>) => {
         const msgs = messages.get(this.friend.name);
-        if (msgs) {
-          msgs.forEach(m => this.messages.push(m))
+        if (this.messages.length === 0) {
+          if (msgs) {
+            msgs.forEach(m => this.messages.push(m))
+          }
+        } else {
+          if (this.messageSize < msgs.length) {
+            const lastMessage = this.messages[this.messages.length - 1];
+            const indexLast = msgs.indexOf(lastMessage);
+            for (let i = indexLast + 1; i <= msgs.length - 1; i++) {
+              this.messages.push(msgs[i]);
+            }
+          }
         }
-      }
-    });
-  }
-
-  private pushMessage(message: MessageChat) {
-    message.user === this.user.name ?
-      this.openpgpService.decryptMessage(this.friend.pri, message.message).then(res => {
-        message.message = res;
-        const link = this.containsLink(message.message);
-        if (link !== -1) {
-          message.message = this.insertLink(message, link);
-        }
-        this.messages.push(message);
-      }) :
-      this.openpgpService.decryptMessage(this.user.pri, message.message).then(res => {
-        message.message = res;
-        const link = this.containsLink(message.message);
-        if (link !== -1) {
-          message.message = this.insertLink(message, link);
-        }
-        this.messages.push(message);
+        this.refreshed = true;
       });
-  }
-
-  private containsLink(message: string): number {
-    if (message.indexOf("http") !== -1 || message.indexOf("https")) {
-      let index = message.indexOf("http");
-      if (index === -1) {
-        index = message.indexOf("https");
-        return index;
-      }
-      return index;
-    }
-  }
-
-  private insertLink(message: MessageChat, index: number): string {
-    const indexEnd = message.message.substring(index, message.message.length).indexOf(" ");
-    if (index === 0 && indexEnd === -1) {
-      return message.user === this.user.name ?
-        '<a href="' + message.message + '" target="_blank" style="color: white;">' + message.message + '</a>' :
-        '<a href="' + message.message + '" target="_blank">' + message.message + '</a>';
-    } else if (indexEnd === -1) {
-      return message.user === this.user.name ?
-        message.message.substring(0, index) + '<a href="' + message.message.substring(index) + '" target="_blank" style="color: white;">' + message.message.substring(index) + '</a>' :
-        message.message.substring(0, index) + '<a href="' + message.message.substring(index) + '" target="_blank">' + message.message.substring(index) + '</a>'
-    } else {
-      return message.user === this.user.name ?
-        message.message.substring(0, index) + '<a href="' + message.message.substring(index, indexEnd) + '" target="_blank" style="color: white;">' + message.message.substring(index, indexEnd) + '</a>' + message.message.substring(indexEnd, message.message.length) :
-        message.message.substring(0, index) + '<a href="' + message.message.substring(index, indexEnd) + '" target="_blank">' + message.message.substring(index, indexEnd) + '</a>' + message.message.substring(indexEnd, message.message.length);
     }
   }
 
   public addEmoji(event) {
     this.message = `${this.message}${event.emoji.native}`;
     this.isEmojiPickerVisible = false;
+    this.input.nativeElement.focus();
   }
 
   public async sendMessage() {
-    const encrypt = await this.openpgpService.encryptMessage(this.message, this.friend.pub);
-    this.socket.emit("message", { message: encrypt, user: this.user.name, friend: this.friend, roomName: this.roomName });
-    this.chatService.initRooms();
+    this.chatService.createMessageChat(
+      this.message,
+      this.user.name,
+      this.friend.name,
+      this.friend.pub,
+      this.roomName
+    );
     this.message = "";
   }
 
@@ -183,17 +141,20 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
     }
   }
 
+  confirmSupression() {
+    this.socket.emit("deleteOne", { id: this.messageToDelete._id });
+    this.messageToDelete = new MessageChat();
+    this.confirm = false;
+  }
+
+  annulerSupression() {
+    this.messageToDelete = new MessageChat();
+    this.confirm = false;
+  }
+
   deleteMessage(message: MessageChat) {
-    Swal.fire({
-      title: 'Supprimer votre message ?',
-      showCancelButton: true,
-      confirmButtonText: 'Ok',
-      cancelButtonText: 'No'
-    }).then((result) => {
-      if (result.value) {
-        this.socket.emit("deleteOne", { id: message._id });
-      }
-    })
+    this.messageToDelete = message;
+    this.confirm = true;
   }
 
   setFriend(friend: string) {
@@ -213,7 +174,8 @@ export class FriendChatComponent implements OnInit, OnDestroy, OnChanges, AfterV
     if (this.subChat) { this.subChat.unsubscribe(); }
     if (this.subUser) { this.subUser.unsubscribe(); }
     if (this.subRoomChat) { this.subRoomChat.unsubscribe(); }
-    this.socket.emit("close", this.user.name);
+    if (this.subFetch) { this.subFetch.unsubscribe(); }
+    this.chatService.closeChat();
   }
 
 }
