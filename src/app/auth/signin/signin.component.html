@@ -20,6 +20,7 @@
                 <mat-form-field>
                     <input formControlName="password" matInput type="password" placeholder="mot de passe" />
                 </mat-form-field>
+                <p (click)="forgotPass()">Mot de passe oublié</p>
                 <mat-error *ngIf="error" color="error">{{ error }}</mat-error>
                 <button color="primary" (click)="submit()" mat-raised-button>Connexion</button>
             </form>

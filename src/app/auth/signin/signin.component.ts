@@ -6,6 +6,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { SocialUser } from "angularx-social-login";
 import { FacebookLoginProvider, SocialAuthService } from "angularx-social-login";
 import { User } from 'src/app/shared/models/user.model';
+import { MailsService } from 'src/app/shared/services/mails.service';
 
 @Component({
   selector: 'app-signin',
@@ -25,7 +26,8 @@ export class SigninComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private authSocialService: SocialAuthService,
-    private userService: UserService
+    private userService: UserService,
+    private mailsService: MailsService
   ) {
     this.user = new User();
   }
@@ -56,6 +58,10 @@ export class SigninComponent implements OnInit {
 
   signOut() {
     this.authSocialService.signOut();
+  }
+
+  forgotPass() {
+    this.mailsService.forgotPass("vincent.darcq@hotmail.fr");
   }
 
 }

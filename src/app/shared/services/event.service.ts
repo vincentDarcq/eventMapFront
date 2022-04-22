@@ -66,6 +66,8 @@ export class EventService {
         } else {
           if (newEvent.getTimeLeft().days >= 0) {
             ev.push(newEvent);
+          } else {
+            this.deleteEvent(newEvent._id);
           }
         }
       }
