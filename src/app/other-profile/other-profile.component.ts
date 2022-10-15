@@ -1,5 +1,5 @@
 import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { User } from '../shared/models/user.model';
 import { EventService } from '../shared/services/event.service';
@@ -37,14 +37,16 @@ export class OtherProfileComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.profile = this.route.snapshot.paramMap.get('user');
-    this.userService.getUser(this.profile).subscribe((user) => {
-      this.user = user
-      if (this.events.length === 0) {
-        this.subEvents = this.eventService.getEventsByUser(user.email).subscribe((events: Array<Event>) => {
-          this.events = events;
-        })
-      }
+    this.route.params.subscribe( (params: ParamMap) => {
+      this.profile = params["user"];
+      this.userService.getUser(this.profile).subscribe((user) => {
+        this.user = user
+        if (this.events.length === 0) {
+          this.subEvents = this.eventService.getEventsByUser(user.email).subscribe((events: Array<Event>) => {
+            this.events = events;
+          })
+        }
+      });
     });
     this.subCurrentUser = this.userService.currentUser.subscribe((user: User) => {
       this.currentUser = user;

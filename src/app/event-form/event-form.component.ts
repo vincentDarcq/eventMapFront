@@ -61,18 +61,24 @@ export class EventFormComponent implements OnInit, DoCheck, OnDestroy {
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
       this.id = params.get('_id');
+      if (this.id) {
+        this.eventService.events.subscribe((events: Array<Event>) => {
+          this.newEvent = events.find((event) => this.id === event._id);
+          this.newEvent.setDateDebut(new Date(this.newEvent.dateDebut));
+        });
+      }
+      if(!this.newEvent.createur){
+        this.newEvent.setCreateur(this.createur.name);
+      }
+      if(!this.newEvent.emailCreateur){
+        this.newEvent.setEmailCreateur(this.createur.email);
+      }
     });
     this.subscription = this.userService.currentUser.subscribe((user) => {
       this.createur.setName(user.name);
       this.createur.setEmail(user.email);
       this.createur.setAmis(user.amis);
     });
-    if (this.id) {
-      this.eventService.events.subscribe((events: Array<Event>) => {
-        this.newEvent = events.find((event) => this.id === event._id);
-        this.newEvent.setDateDebut(new Date(this.newEvent.dateDebut));
-      });
-    }
   }
 
   ngDoCheck() {
@@ -178,10 +184,6 @@ export class EventFormComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   whichCreator() {
-    if (!this.createur.name) {
-      this.errorCreator = "Vous n'êtes pas connecté en tant qu'utilisateur connu, vous devez donc spécifier un organisateur pour cet évènement ou vous connecter";
-      return;
-    }
     if (!this.newEvent.createur && !this.newEvent.emailCreateur) {
       this.newEvent.setCreateur(this.createur.name);
       this.newEvent.setEmailCreateur(this.createur.email);

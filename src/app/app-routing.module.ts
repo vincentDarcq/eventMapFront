@@ -16,8 +16,8 @@ const routes: Routes = [
   { path: 'signin', component: SigninComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'profile', canActivate: [AuthGuard], component: ProfileComponent },
-  { path: 'otherProfile', component: OtherProfileComponent },
-  { path: 'eventDetail', component: EventDetailComponent },
+  { path: 'otherProfile/:user', component: OtherProfileComponent },
+  { path: 'eventDetail/:id', component: EventDetailComponent },
   { path: 'editPass', canActivate: [AuthGuard], component: EditPasswordComponent },
   { path: '**', component: MainComponent }
 ];

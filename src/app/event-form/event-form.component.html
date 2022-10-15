@@ -52,19 +52,16 @@
             [(ngModel)]="newEvent.endTime" name="endTime" />
         </mat-form-field>
         <ngx-material-timepicker #endTime [minutesGap]="5"></ngx-material-timepicker>
-        <div *ngIf="!newEvent.createByOwner" fxLayout="column" fxLayoutAlign="center center">
-          <label for="newEvent.createur">Ce n'est pas vous qui organisez ?
-            <mat-form-field fxLayout="column" fxLayoutAlign="center center">
-              <input matInput [(ngModel)]="newEvent.createur" name="organisateur" placeholder="Organisateur" />
-            </mat-form-field>
-          </label>
-          <label for="newEvent.emailCreateur">Email de l'organisateur
-            <mat-form-field fxLayout="column" fxLayoutAlign="center center">
-              <input matInput [(ngModel)]="newEvent.emailCreateur" name="organisateur" placeholder="email" />
-            </mat-form-field>
-          </label>
-          <span *ngIf="errorCreator" class="error-msg">{{ errorCreator }}</span>
-        </div>
+        <label for="newEvent.createur">Organisateur
+          <mat-form-field fxLayout="column" fxLayoutAlign="center center">
+            <input matInput [(ngModel)]="newEvent.createur" name="organisateur" placeholder="Organisateur" />
+          </mat-form-field>
+        </label>
+        <label for="newEvent.emailCreateur">email
+          <mat-form-field fxLayout="column" fxLayoutAlign="center center">
+            <input matInput [(ngModel)]="newEvent.emailCreateur" name="organisateur" placeholder="email" />
+          </mat-form-field>
+        </label>
       </div>
 
       <div fxLayout="column nowrap" style="width: 500px;">

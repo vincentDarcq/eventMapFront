@@ -1,5 +1,5 @@
 <mat-card class="container" *ngIf="event.name; else noevent;">
-    <a class="nav-link" *ngIf="!details; else noLink" [routerLink]="['/eventDetail', { _id: event._id }]">
+    <a class="nav-link" *ngIf="!details; else noLink" [routerLink]="['/eventDetail', event._id]">
         <h2>{{ event.name }}</h2>
     </a>
     <ng-template #noLink>
@@ -16,7 +16,7 @@
     <mat-card-content *ngIf="event.space_and_time">{{ event.space_and_time }}</mat-card-content>
     <mat-card-content *ngIf="event.pricing_info">{{ event.pricing_info }}</mat-card-content>
     <mat-card-content id="organisateur" *ngIf="event.createur">Organisateur :
-        <a class="nav-link" [routerLink]="['/otherProfile', { user : event.createur }]"
+        <a class="nav-link" [routerLink]="['/otherProfile', event.createur]"
             *ngIf="(currentUser != null && event.emailCreateur !== currentUser.email && event.createByOwner) || (!currentUser && event.createByOwner); else current">
             {{ event.createur }}</a>
     </mat-card-content>

@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayout.xs="column" class="container">
+<div fxLayout="row" fxLayout.xs="column" class="container" *ngIf="event">
   <div fxLayout="column" fxLayout.xs="row" fxFlex="50" fxFlex.xs="50" id="event">
     <app-event [details]=true [inputEvent]="event"></app-event>
     <div fxLayout="row" fxLayoutGap="5px">

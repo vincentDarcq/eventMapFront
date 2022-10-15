@@ -32,7 +32,7 @@ export class EventComponent implements OnInit, OnChanges, OnDestroy {
       this.event = event;
     });
   }
-
+  
   ngOnChanges(changes: SimpleChanges): void {
     const e = changes.inputEvent.currentValue;
     if (typeof e !== 'undefined') {
@@ -41,7 +41,7 @@ export class EventComponent implements OnInit, OnChanges, OnDestroy {
         e.timeLeft, e.createOwner);
       this.event.setSpaceAndTime(e.space_and_time);
       this.event.setPricingInfo(e.pricing_info);
-      this.event.setCreateByOwner(e.createByOwner);
+      this.event.setCreateByOwner(true);
     }
   }
 

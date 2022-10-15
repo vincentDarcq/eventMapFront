@@ -21,12 +21,12 @@ export class EventDetailComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
-      this.idEvent = params.get('_id');
-    });
-    this.eventService.events.subscribe((events: Array<Event>) => {
-      const id = events.findIndex((event) => this.idEvent === event._id);
-      this.event = events[id];
+    this.activatedRoute.params.subscribe((params: ParamMap) => {
+      this.idEvent = params['id'];
+      this.eventService.events.subscribe((events: Array<Event>) => {
+        const id = events.findIndex((event) => this.idEvent === event._id);
+        this.event = events[id];
+      });
     });
   }
 

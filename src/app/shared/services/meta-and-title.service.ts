@@ -9,7 +9,8 @@ import metaData from '../helpers/meta-data';
 })
 export class MetaAndTitleService implements OnDestroy {
 
-  private subscription = new Subscription
+  private subscription = new Subscription;
+  private urlPaths = [];
 
   constructor(
     private router: Router,
@@ -19,6 +20,7 @@ export class MetaAndTitleService implements OnDestroy {
     this.subscription.add(this.router.events.subscribe((event: RouterEvent) => {
       if (event instanceof NavigationEnd) {
         const url = event.url;
+        this.urlPaths = url.split("/");
         this.updateTitle(url);
         this.updateMeta(url);
       }
@@ -26,11 +28,10 @@ export class MetaAndTitleService implements OnDestroy {
   }
 
   private updateTitle(url: string): void {
-    const index = url.indexOf(";")
-    if (index !== -1) {
-      this.title.setTitle(metaData[url.substring(0, index)].title);
-    } else {
-      this.title.setTitle(metaData[url].title);
+    if(typeof metaData[this.urlPaths[1]] === "undefined"){
+      this.title.setTitle(metaData['/'].title);
+    }else{
+      this.title.setTitle(metaData[this.urlPaths[1]].title);
     }
   }
 
@@ -39,7 +40,7 @@ export class MetaAndTitleService implements OnDestroy {
 
     const newTagDescription = {
       name: 'description',
-      content: metaData[url].metas.description
+      content: metaData["/"+this.urlPaths[1]].metas.description
     }
 
     oldTagDescription

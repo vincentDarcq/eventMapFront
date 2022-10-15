@@ -58,6 +58,7 @@ export class EventService {
         newEvent.image1 = e.image1;
         newEvent.image2 = e.image2;
         newEvent.image3 = e.image3;
+        newEvent.setImageUrl(e.imageUrl)
         if (newEvent.getDateFin()) {
           const time_before_end = this.timeBefore(newEvent.getDateFin());
           if (time_before_end.days >= 0 || time_before_end.hours >= 0 || time_before_end.minutes >= 0) {
