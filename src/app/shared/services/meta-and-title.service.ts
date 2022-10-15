@@ -35,7 +35,6 @@ export class MetaAndTitleService implements OnDestroy {
   private updateMeta(url: string): void {
     const oldTagDescription = this.meta.getTag('name="description"');
     const index = "/"+this.urlPaths[1];
-    console.log(index)
 
     const newTagDescription = {
       name: 'description',

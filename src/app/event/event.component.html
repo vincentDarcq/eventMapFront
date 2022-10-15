@@ -25,7 +25,7 @@
     </ng-template>
     <mat-card-content *ngIf="event.emailCreateur">Contact : {{ event.emailCreateur }}</mat-card-content>
     <a class="nav-link" [routerLink]="['/createEvent', { _id : event._id }]"
-        *ngIf="currentUser && event.createByOwner && event.emailCreateur === currentUser.email">
+        *ngIf="currentUser.name && event.createByOwner && event.emailCreateur === currentUser.email">
         <button mat-raised-button color="primary">
             Modifier l'évènement</button>
     </a>

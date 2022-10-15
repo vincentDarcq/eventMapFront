@@ -39,9 +39,10 @@ export class EventComponent implements OnInit, OnChanges, OnDestroy {
       this.event = new Event(e._id, e.name, e.dateDebut, e.beginTime, e.dateFin, e.endTime,
         e.type, e.description, e.lieu, e.latitude, e.longitude, e.createur, e.emailCreateur,
         e.timeLeft, e.createOwner);
-      this.event.setSpaceAndTime(e.space_and_time);
-      this.event.setPricingInfo(e.pricing_info);
-      this.event.setCreateByOwner(true);
+        this.event.setSpaceAndTime(e.space_and_time);
+        this.event.setPricingInfo(e.pricing_info);
+        this.event.setCreateByOwner(true);
+        console.log(this.currentUser)
     }
   }
 
