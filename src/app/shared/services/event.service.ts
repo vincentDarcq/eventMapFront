@@ -184,6 +184,14 @@ export class EventService {
     return this.events.value.find(e => e._id === id);
   }
 
+  public fetchEvent(id: string): Observable<Event>{
+    return this.http.get<Event>(`/api/event/getEventsById`, {
+      params: {
+        id: id
+      }
+    });
+  }
+
   public setBounds(bounds: LatLngBounds) {
     this.zone.run(() => {
       this.bounds.next(bounds);

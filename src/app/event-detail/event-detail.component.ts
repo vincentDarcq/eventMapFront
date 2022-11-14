@@ -26,6 +26,11 @@ export class EventDetailComponent implements OnInit {
       this.eventService.events.subscribe((events: Array<Event>) => {
         const id = events.findIndex((event) => this.idEvent === event._id);
         this.event = events[id];
+        if(!this.event){
+          this.eventService.fetchEvent(this.idEvent).subscribe( (event: Event) => {
+            this.event = event;
+          })
+        }
       });
     });
   }
