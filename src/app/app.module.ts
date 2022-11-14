@@ -53,6 +53,7 @@ import { SanitizeHtmlPipe } from './sanitize-html.pipe';
 
 //emojis
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
     EventChatComponent,
     FriendListComponent,
     FriendChatComponent,
-    SanitizeHtmlPipe
+    SanitizeHtmlPipe,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

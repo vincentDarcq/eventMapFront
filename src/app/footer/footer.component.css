@@ -1,0 +1,10 @@
+.component {
+    background-color: rgb(53, 172, 174);
+    color: white;
+    text-align: center;
+    padding: 1%;
+}
+
+#link {
+    color: white;
+}
