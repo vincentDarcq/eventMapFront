@@ -25,7 +25,7 @@ export class EventsApiService {
 
   public callOpenData() {
     let cpt = 0;
-    for (let i = 3001; i < 5000; i += 20) {
+    for (let i = 5100; i < 5400; i += 20) {
       this.http.get<any>(`https://public.opendatasoft.com/api/records/1.0/search/?dataset=evenements-publics-openagenda&q=&rows=20&start=${i}&facet=keywords_fr&facet=updatedat&facet=firstdate_begin&facet=firstdate_end&facet=lastdate_begin&facet=lastdate_end&facet=location_city&facet=location_department&facet=location_region&facet=location_countrycode&refine.keywords_fr=CONCERT`)
         .subscribe(res => {
           res.records.forEach(element => {
@@ -36,8 +36,12 @@ export class EventsApiService {
             event.setName(f.title_fr);
             event.setDescription(f.description_fr);
             event.setLieu(f.location_address);
-            event.setLatitude(f.location_coordinates[0]);
-            event.setLongitude(f.location_coordinates[1]);
+            if(!f.location_coordinates){
+              console.log(f)
+            }else {
+              event.setLatitude(f.location_coordinates[0]);
+              event.setLongitude(f.location_coordinates[1]);
+            }
             event.setDateDebut(new Date(f.firstdate_begin));
             event.setDateFin(new Date(f.firstdate_end));
             event.setSpaceAndTime(f.space_time_info);
@@ -59,8 +63,12 @@ export class EventsApiService {
             event.setName(f.title_fr);
             event.setDescription(f.description_fr);
             event.setLieu(f.location_address);
-            event.setLatitude(f.location_coordinates[0]);
-            event.setLongitude(f.location_coordinates[1]);
+            if(!f.location_coordinates){
+              console.log(f)
+            }else {
+              event.setLatitude(f.location_coordinates[0]);
+              event.setLongitude(f.location_coordinates[1]);
+            }
             event.setDateDebut(new Date(f.firstdate_begin));
             event.setDateFin(new Date(f.firstdate_end));
             event.setSpaceAndTime(f.space_time_info);
@@ -82,8 +90,12 @@ export class EventsApiService {
             event.setName(f.title_fr);
             event.setDescription(f.description_fr);
             event.setLieu(f.location_address);
-            event.setLatitude(f.location_coordinates[0]);
-            event.setLongitude(f.location_coordinates[1]);
+            if(!f.location_coordinates){
+              console.log(f)
+            }else {
+              event.setLatitude(f.location_coordinates[0]);
+              event.setLongitude(f.location_coordinates[1]);
+            }
             event.setDateDebut(new Date(f.firstdate_begin));
             event.setDateFin(new Date(f.firstdate_end));
             event.setSpaceAndTime(f.space_time_info);
@@ -105,8 +117,12 @@ export class EventsApiService {
             event.setName(f.title_fr);
             event.setDescription(f.description_fr);
             event.setLieu(f.location_address);
-            event.setLatitude(f.location_coordinates[0]);
-            event.setLongitude(f.location_coordinates[1]);
+            if(!f.location_coordinates){
+              console.log(f)
+            }else {
+              event.setLatitude(f.location_coordinates[0]);
+              event.setLongitude(f.location_coordinates[1]);
+            }
             event.setDateDebut(new Date(f.firstdate_begin));
             event.setDateFin(new Date(f.firstdate_end));
             event.setSpaceAndTime(f.space_time_info);
@@ -128,8 +144,12 @@ export class EventsApiService {
             event.setName(f.title_fr);
             event.setDescription(f.description_fr);
             event.setLieu(f.location_address);
-            event.setLatitude(f.location_coordinates[0]);
-            event.setLongitude(f.location_coordinates[1]);
+            if(!f.location_coordinates){
+              console.log(f)
+            }else {
+              event.setLatitude(f.location_coordinates[0]);
+              event.setLongitude(f.location_coordinates[1]);
+            }
             event.setDateDebut(new Date(f.firstdate_begin));
             event.setDateFin(new Date(f.firstdate_end));
             event.setSpaceAndTime(f.space_time_info);
@@ -151,8 +171,12 @@ export class EventsApiService {
             event.setName(f.title_fr);
             event.setDescription(f.description_fr);
             event.setLieu(f.location_address);
-            event.setLatitude(f.location_coordinates[0]);
-            event.setLongitude(f.location_coordinates[1]);
+            if(!f.location_coordinates){
+              console.log(f)
+            }else {
+              event.setLatitude(f.location_coordinates[0]);
+              event.setLongitude(f.location_coordinates[1]);
+            }
             event.setDateDebut(new Date(f.firstdate_begin));
             event.setDateFin(new Date(f.firstdate_end));
             event.setSpaceAndTime(f.space_time_info);
@@ -174,8 +198,12 @@ export class EventsApiService {
             event.setName(f.title_fr);
             event.setDescription(f.description_fr);
             event.setLieu(f.location_address);
-            event.setLatitude(f.location_coordinates[0]);
-            event.setLongitude(f.location_coordinates[1]);
+            if(!f.location_coordinates){
+              console.log(f)
+            }else {
+              event.setLatitude(f.location_coordinates[0]);
+              event.setLongitude(f.location_coordinates[1]);
+            }
             event.setDateDebut(new Date(f.firstdate_begin));
             event.setDateFin(new Date(f.firstdate_end));
             event.setSpaceAndTime(f.space_time_info);

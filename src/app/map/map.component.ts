@@ -202,7 +202,10 @@ export class MapComponent implements OnInit, DoCheck, OnChanges {
 
   private createMarker(e) {
     const point = this.mapService.createPoint(this.mapPoint);
-    let time = e.timeLeft.days + "j " + e.timeLeft.hours + "h " + e.timeLeft.minutes + "min";
+    let time = "";
+    if(typeof e.timeLeft !== 'undefined'){
+      time = e.timeLeft.days + "j " + e.timeLeft.hours + "h " + e.timeLeft.minutes + "min"
+    }
     const layer = marker(point).setIcon(this.getRedIcon())
       .addTo(this.map)
       .on('click', () => {
